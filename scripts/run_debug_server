@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+export FLASK_APP=splitbills_server.py
+export FLASK_ENV=development
+
+flask run $@
