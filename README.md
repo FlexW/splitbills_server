@@ -21,7 +21,7 @@ than bash, search for an correct activate file. Example for fish:
 ```
 source env/bin/activate
 ```
-Now install the dependencies
+Now install the dependencies.
 ```
-pip install -r requirements.txt
+pip install -r requirements/dev.txt
 ```
