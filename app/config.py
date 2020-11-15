@@ -1,5 +1,9 @@
+import os
+
+
 class Config:
-    pass
+    GITHUB_SECRET = os.environ.get("GITHUB_SECRET") or "github_secret"
+    REPO_PATH = os.environ.get("REPO_PATH") or "repo_path"
 
 
 class TestingConfig(Config):
