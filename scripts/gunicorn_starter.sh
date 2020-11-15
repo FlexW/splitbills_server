@@ -13,4 +13,5 @@ gunicorn \
     --chdir ${DIRECTORY} \
     ${APP_NAME}:${START_COMMAND} \
     -w ${WORKERS} \
-    -b ${HOST}:${PORT}
+    -b ${HOST}:${PORT} \
+    --reload
