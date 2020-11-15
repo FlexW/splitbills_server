@@ -23,7 +23,7 @@ source env/bin/activate
 ```
 Now install the dependencies.
 ```
-pip install -r requirements/dev.txt
+pip install -r requirements.txt
 ```
 ## Run tests
 Run all tests with
