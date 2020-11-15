@@ -25,6 +25,11 @@ Now install the dependencies.
 ```
 pip install -r requirements/dev.txt
 ```
+## Run tests
+Run all tests with
+```
+./scripts/run_tests
+```
 
 ## Run
 Tell flask which app it shoud run
