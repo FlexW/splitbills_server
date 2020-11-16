@@ -1,3 +1,6 @@
+![Tests](https://github.com/FlexW/splitbills_server/workflows/Tests/badge.svg)
+![Deploy](https://github.com/FlexW/splitbills_server/workflows/Deploy/badge.svg)
+
 # SplitBills Server
 
 Server for [SplitBills](https://gitlab.com/flexw/splitbills).
