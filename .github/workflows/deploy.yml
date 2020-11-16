@@ -29,8 +29,10 @@ jobs:
           ECD_KEY: ${{ secrets.DEPLOY_KEY }}
           SERVER_PSWD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          echo "$ECD_KEY" > $HOME/ecd
-          chmod 400 $HOME/ecd
+          mkdir $HOME/.ssh
+          echo "$ECD_KEY" > $HOME/.ssh/ecd
+          chmod 700 $HOME/.ssh
+          chmod 600 $HOME/.ssh/ecd
       - name: Push Code to server
         run: rsync -avz --delete --exclude '.git*' -e "ssh -i $HOME/ecd -o StrictHostKeyChecking=no" ./ felix@felixweilbach.de:/home/felix/workspace/docker/splitbills_server/splitbills_server/
 
