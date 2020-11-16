@@ -27,7 +27,6 @@ jobs:
       - name: Setup key
         env:
           ECD_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          SERVER_PSWD: ${{ secrets.SERVER_PASSWORD }}
         run: |
           mkdir $HOME/.ssh
           echo "$ECD_KEY" > $HOME/.ssh/ecd
@@ -37,4 +36,6 @@ jobs:
         run: rsync -avz --delete --exclude '.git*' -e "ssh -i $HOME/.ssh/ecd -o StrictHostKeyChecking=no" ./ felix@felixweilbach.de:/home/felix/workspace/docker/splitbills_server/splitbills_server/
 
       - name: (Re)start docker container
-        run: ssh -i $HOME/.ssh/ecd felix@felixweilbach.de -o StrictHostKeyChecking=no "cd workspace/docker/splitbills_server && echo $SERVER_PSWD" # && echo $SERVER_PSWD | sudo -S docker-compose up --build"
+        env:
+          SERVER_PSWD: ${{ secrets.SERVER_PASSWORD }}
+        run: ssh -i $HOME/.ssh/ecd felix@felixweilbach.de -o StrictHostKeyChecking=no "cd workspace/docker/splitbills_server && echo $SERVER_PSWD | sudo -S docker-compose up --build"
