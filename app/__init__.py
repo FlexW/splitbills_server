@@ -12,7 +12,5 @@ def create_app(config_name):
 
 def register_blueprints(app):
     from app.content import content_blueprint
-    from app.github import github_blueprint
 
     app.register_blueprint(content_blueprint)
-    app.register_blueprint(github_blueprint)
