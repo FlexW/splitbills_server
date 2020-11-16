@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 1
       - name: Setup key
         env:
-          ECD_KEY: ${{ secrets.DEPLOY_KEY }}
+          ECD_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           SERVER_PSWD: ${{ secrets.SERVER_PASSWORD }}
         run: |
           mkdir $HOME/.ssh
