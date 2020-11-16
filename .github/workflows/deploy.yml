@@ -34,7 +34,7 @@ jobs:
           chmod 700 $HOME/.ssh
           chmod 600 $HOME/.ssh/ecd
       - name: Push Code to server
-        run: rsync -avz --delete --exclude '.git*' -e "ssh -i $HOME/ecd -o StrictHostKeyChecking=no" ./ felix@felixweilbach.de:/home/felix/workspace/docker/splitbills_server/splitbills_server/
+        run: rsync -avz --delete --exclude '.git*' -e "ssh -i $HOME/.ssh/ecd -o StrictHostKeyChecking=no" ./ felix@felixweilbach.de:/home/felix/workspace/docker/splitbills_server/splitbills_server/
 
       - name: (Re)start docker container
-        run: ssh -i $HOME/ecd felix@felixweilbach.de -o StrictHostKeyChecking=no "cd workspace/docker/splitbills_server && echo $SERVER_PSWD | sudo -S docker-compose up --build"
+        run: ssh -i $HOME/.ssh/ecd felix@felixweilbach.de -o StrictHostKeyChecking=no "cd workspace/docker/splitbills_server && echo $SERVER_PSWD | sudo -S docker-compose up --build"
