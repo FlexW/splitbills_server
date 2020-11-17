@@ -6,11 +6,14 @@ def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
-    register_blueprints(app)
+    register_api(app)
+
     return app
 
 
-def register_blueprints(app):
-    from app.content import content_blueprint
+def register_api(app):
+    from flask_restful import Api
+    from app.api import init_routes
 
-    app.register_blueprint(content_blueprint)
+    api = Api(app)
+    init_routes(api)
