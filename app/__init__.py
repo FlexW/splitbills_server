@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_httpauth import HTTPBasicAuth
 from .config import config
 
+auth = HTTPBasicAuth()
 db = SQLAlchemy()
 
 

@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 from app import db
-from app.models.user import User
+from app.models.user import User, insert_user, get_user_by_email
 from app.api.schemas.user import user_schema, users_schema
 
 
@@ -26,7 +26,7 @@ class UsersResource(Resource):
             return error.messages, 422
 
         # Check if user exists
-        user = User.query.filter_by(email=data["email"]).first()
+        user = get_user_by_email(email=data["email"])
         if user is not None:
             return {"message": "User already exists."}
 
@@ -34,8 +34,7 @@ class UsersResource(Resource):
         user = User(first_name=data["first_name"],
                     last_name=data["last_name"],
                     email=data["email"])
-        db.session.add(user)
-        db.session.commit()
+        insert_user(user)
 
         result = user_schema.dump(User.query.get(user.id))
 
