@@ -56,3 +56,14 @@ flask run --host=0.0.0.0
 ```
 There is a script in the `script` directory called `run_debug_server`
 which runs all the previous commands automatically.
+
+## Api Description
+
+| Resource           | URI          | Method    |
+|:-------------------|:-------------|:----------|
+| List of all groups | /groups      | GET, POST |
+| Group detail       | /groups/{id} | GET, PUT  |
+| List of all bills  | /bills       | GET, POST |
+| Bill detail        | /bills/{id}  | GET, PUT  |
+| List of all users  | /users       | GET, POST |
+| User detail        | /users/{id}  | GET, PUT  |
