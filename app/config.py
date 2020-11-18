@@ -2,8 +2,9 @@ import os
 
 
 class Config:
-    GITHUB_SECRET = os.environ.get("GITHUB_SECRET") or "github_secret"
-    REPO_PATH = os.environ.get("REPO_PATH") or "repo_path"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + \
+        os.environ.get("PWD") + "/sb.db.sqlite"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class TestingConfig(Config):

@@ -1,5 +1,8 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from .config import config
+
+db = SQLAlchemy()
 
 
 def create_app(config_name):
@@ -7,6 +10,12 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
 
     register_api(app)
+
+    # Important to init db at last, since models need to be imported
+    # first
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     return app
 

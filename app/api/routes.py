@@ -1,4 +1,5 @@
-from .resources import UserResource, UsersResource
+from .resources.user import UserResource
+from .resources.users import UsersResource
 
 
 def init_routes(api):
