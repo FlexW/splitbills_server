@@ -1,5 +1,8 @@
 ![Tests](https://github.com/FlexW/splitbills_server/workflows/Tests/badge.svg)
+
 ![Dev Tests](https://github.com/FlexW/splitbills_server/workflows/Dev%20Tests/badge.svg)
+![codecov](https://codecov.io/gh/FlexW/splitbills_server/branch/dev/graph/badge.svg?token=DODRY5LAPK)](https://codecov.io/gh/FlexW/splitbills_server)
+
 ![Deploy](https://github.com/FlexW/splitbills_server/workflows/Deploy/badge.svg)
 
 # SplitBills Server
