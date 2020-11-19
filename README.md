@@ -1,4 +1,5 @@
 ![Tests](https://github.com/FlexW/splitbills_server/workflows/Tests/badge.svg)
+![Dev Tests](https://github.com/FlexW/splitbills_server/workflows/Dev%20Tests/badge.svg)
 ![Deploy](https://github.com/FlexW/splitbills_server/workflows/Deploy/badge.svg)
 
 # SplitBills Server
