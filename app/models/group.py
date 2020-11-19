@@ -21,3 +21,8 @@ def insert_group(group):
 def get_group_by_id(group_id):
     group = Group.query.filter_by(id=group_id).first()
     return group
+
+
+def get_groups_by_user_id(user_id):
+    groups = Group.query.filter(Group.members.any(id=user_id)).all()
+    return groups

@@ -1,8 +1,8 @@
 from flask import request, g
 from flask_restful import Resource
 from marshmallow import ValidationError
-from app.api.schemas.group import group_schema
-from app.models.group import Group, insert_group
+from app.api.schemas.group import group_schema, groups_schema
+from app.models.group import Group, insert_group, get_groups_by_user_id
 from app import auth
 
 
@@ -31,3 +31,11 @@ class GroupsResource(Resource):
         group = insert_group(group)
 
         return {"message": "Created new group.", "group": group_schema.dump(group)}
+
+    @auth.login_required
+    def get(self):
+        current_user = g.current_user
+
+        groups = get_groups_by_user_id(current_user.id)
+
+        return {"groups": groups_schema.dump(groups)}
