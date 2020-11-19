@@ -6,6 +6,8 @@ from .config import config
 auth = HTTPBasicAuth()
 db = SQLAlchemy()
 
+# Import to get registered
+from app.authentication import verify_password
 
 def create_app(config_name):
     app = Flask(__name__)

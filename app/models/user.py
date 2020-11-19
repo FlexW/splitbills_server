@@ -25,9 +25,19 @@ def insert_user(user):
     db.session.add(user)
     db.session.commit()
 
+    return user
+
 
 def get_user_by_email(email):
     user = User.query.filter_by(email=email).first()
+    if user is None:
+        return None
+
+    return user
+
+
+def get_user_by_id(user_id):
+    user = User.query.filter_by(id=user_id).first()
     if user is None:
         return None
 

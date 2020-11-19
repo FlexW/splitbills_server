@@ -1,6 +1,6 @@
 import pytest
 
-from app.models.user import User, insert_user, get_user_by_email
+from app.models.user import User, insert_user, get_user_by_email, get_user_by_id
 
 def test_password_setter():
     u = User(password="securepassword")
@@ -41,6 +41,7 @@ def test_get_known_user_by_email(setup_app):
 
     assert u == u_from_db
 
+
 def test_dont_get_unknown_user_by_email(setup_app):
     u = User(first_name="Max",
              last_name="Muster",
@@ -51,4 +52,30 @@ def test_dont_get_unknown_user_by_email(setup_app):
 
     u_from_db = get_user_by_email("unmuster@mail.de")
 
-    assert u != u_from_db
+    assert u_from_db is None
+
+
+def test_get_known_user_by_id(setup_app):
+    u = User(first_name="Max",
+             last_name="Muster",
+             email="muster@mail.de",
+             password="securepassword")
+
+    u = insert_user(u)
+
+    u_from_db = get_user_by_id(u.id)
+
+    assert u == u_from_db
+
+
+def test_dont_get_unknown_user_by_id(setup_app):
+    u = User(first_name="Max",
+             last_name="Muster",
+             email="muster@mail.de",
+             password="securepassword")
+
+    u = insert_user(u)
+
+    u_from_db = get_user_by_id(0)
+
+    assert u_from_db is None

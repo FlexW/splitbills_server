@@ -33,7 +33,8 @@ class UsersResource(Resource):
         # Create new user
         user = User(first_name=data["first_name"],
                     last_name=data["last_name"],
-                    email=data["email"])
+                    email=data["email"],
+                    password=data["password"])
         insert_user(user)
 
         result = user_schema.dump(User.query.get(user.id))

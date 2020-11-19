@@ -1,5 +1,5 @@
 from app.models.user import User, insert_user
-from app.auth import verify_password
+from app.authentication import verify_password
 
 def test_verify_correct_password(setup_app):
     password="securepassword"
