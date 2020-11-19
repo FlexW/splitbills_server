@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, g
 from flask_restful import Resource
 from marshmallow import ValidationError
 from app.api.schemas.group import group_schema
@@ -21,6 +21,7 @@ class GroupsResource(Resource):
 
             # Create new group
             group = Group(name=data["name"])
+            group.members.append(g.current_user)
 
         except ValidationError as error:
             return error.messages, 422

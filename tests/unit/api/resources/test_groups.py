@@ -27,4 +27,7 @@ def test_add_group(app, test_client, api_headers_auth):
     assert json_respone["group"]["id"] == 1
     assert json_respone["group"]["name"] == group_data["name"]
 
-    assert get_group_by_id(json_respone["group"]["id"]) is not None
+    group = get_group_by_id(json_respone["group"]["id"])
+
+    assert group is not None
+    assert len(group.members) == 1

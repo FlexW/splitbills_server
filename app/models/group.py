@@ -1,9 +1,14 @@
 from app import db
+from app.models.group_member import group_member_table
 
 
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+
+    members = db.relationship("User",
+                              secondary=group_member_table,
+                              back_populates="groups")
 
 
 def insert_group(group):

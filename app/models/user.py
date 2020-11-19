@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
+from app.models.group_member import group_member_table
 
 
 class User(db.Model):
@@ -8,6 +9,10 @@ class User(db.Model):
     last_name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=False, unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
+
+    groups = db.relationship("Group",
+                             secondary=group_member_table,
+                             back_populates="members")
 
     @property
     def password(self):
