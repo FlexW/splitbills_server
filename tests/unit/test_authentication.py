@@ -1,7 +1,7 @@
 from app.models.user import User, insert_user
 from app.authentication import verify_password
 
-def test_verify_correct_password(setup_app):
+def test_verify_correct_password(app):
     password="securepassword"
     u = User(first_name="Max",
              last_name="Muster",
@@ -13,7 +13,7 @@ def test_verify_correct_password(setup_app):
     assert verify_password(u.email, password)
 
 
-def test_dont_verify_incorrect_password(setup_app):
+def test_dont_verify_incorrect_password(app):
     u = User(first_name="Max",
              last_name="Muster",
              email="muster@mail.de",

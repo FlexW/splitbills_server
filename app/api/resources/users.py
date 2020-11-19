@@ -7,12 +7,6 @@ from app.api.schemas.user import user_schema, users_schema
 
 
 class UsersResource(Resource):
-    def get(self):
-        users = User.query.all()
-        result = users_schema.dump(users)
-
-        return {"users": result}
-
     def post(self):
         json_data = request.get_json()
 
@@ -26,17 +20,23 @@ class UsersResource(Resource):
             return error.messages, 422
 
         # Check if user exists
-        user = get_user_by_email(email=data["email"])
+        try:
+            user = get_user_by_email(email=data["email"])
+        except KeyError as error:
+            return {"message": "Could not find field {}.".format(str(error))}
         if user is not None:
             return {"message": "User already exists."}
 
         # Create new user
-        user = User(first_name=data["first_name"],
-                    last_name=data["last_name"],
-                    email=data["email"],
-                    password=data["password"])
+        try:
+            user = User(first_name=data["first_name"],
+                        last_name=data["last_name"],
+                        email=data["email"],
+                        password=data["password"])
+        except KeyError as error:
+            return {"message": "Could not find field {}.".format(str(error))}
         insert_user(user)
 
         result = user_schema.dump(User.query.get(user.id))
 
-        return {"message:": "Created new user.", "user": result}
+        return {"message": "Created new user.", "user": result}

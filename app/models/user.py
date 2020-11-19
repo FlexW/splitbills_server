@@ -42,3 +42,9 @@ def get_user_by_id(user_id):
         return None
 
     return user
+
+
+def get_all_users():
+    users = User.query.all()
+
+    return users

@@ -29,7 +29,7 @@ def test_password_salts_are_random():
     assert u1.password_hash is not u2.password_hash
 
 
-def test_get_known_user_by_email(setup_app):
+def test_get_known_user_by_email(app):
     u = User(first_name="Max",
              last_name="Muster",
              email="muster@mail.de",
@@ -42,7 +42,7 @@ def test_get_known_user_by_email(setup_app):
     assert u == u_from_db
 
 
-def test_dont_get_unknown_user_by_email(setup_app):
+def test_dont_get_unknown_user_by_email(app):
     u = User(first_name="Max",
              last_name="Muster",
              email="muster@mail.de",
@@ -55,7 +55,7 @@ def test_dont_get_unknown_user_by_email(setup_app):
     assert u_from_db is None
 
 
-def test_get_known_user_by_id(setup_app):
+def test_get_known_user_by_id(app):
     u = User(first_name="Max",
              last_name="Muster",
              email="muster@mail.de",
@@ -68,7 +68,7 @@ def test_get_known_user_by_id(setup_app):
     assert u == u_from_db
 
 
-def test_dont_get_unknown_user_by_id(setup_app):
+def test_dont_get_unknown_user_by_id(app):
     u = User(first_name="Max",
              last_name="Muster",
              email="muster@mail.de",
