@@ -1,4 +1,4 @@
-from flask import request, g
+from flask import abort, request, g
 from flask_restful import Resource
 from app import auth
 from .common import (load_request_data_as_json,
