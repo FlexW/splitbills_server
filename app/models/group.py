@@ -26,3 +26,8 @@ def get_group_by_id(group_id):
 def get_groups_by_user_id(user_id):
     groups = Group.query.filter(Group.members.any(id=user_id)).all()
     return groups
+
+
+def get_all_groups():
+    groups = Group.query.all()
+    return groups
