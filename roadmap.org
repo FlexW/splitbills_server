@@ -2,7 +2,7 @@
 
 ** TODO Work on groups
 *** DONE User should be able to add members to group on creating group
-*** TODO If group is already created user should be able to add other members
+*** DONE If group is already created user should be able to add other members
 *** TODO User should be able to delete group members
 *** TODO User should be able to modify group data
 
