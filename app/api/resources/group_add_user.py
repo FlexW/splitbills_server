@@ -5,6 +5,7 @@ from app.api.schemas.group_add_user import group_add_user_schema
 from app import auth
 from app.models.user import get_user_by_id
 from app.models.group import get_group_by_id
+from app.models.group_member import GroupMember
 from .common import load_request_data_as_json
 
 
@@ -18,8 +19,8 @@ def _check_group_exists(group_id):
 
 
 def _check_user_is_member_of_group(user, group):
-    for member in group.members:
-        if member.id == user.id:
+    for member in group.group_members:
+        if member.user_id == user.id:
             return
 
     abort({"message": "Forbidden"})
@@ -33,6 +34,7 @@ def _check_user_exists(user_id):
 
     return user
 
+
 def _load_group_add_user_data(json_data):
     try:
         data = group_add_user_schema.load(json_data)
@@ -43,13 +45,13 @@ def _load_group_add_user_data(json_data):
 
 
 def _check_user_is_not_already_member_of_group(user, group):
-    for member in group.members:
-        if member.id == user.id:
+    for member in group.group_members:
+        if member.user_id == user.id:
             abort({"message": "User is already in group."})
 
 
 def _add_user_to_group(user, group):
-    group.members.append(user)
+    group.group_members.append(GroupMember(user=user))
 
 
 class GroupAddUserResource(Resource):

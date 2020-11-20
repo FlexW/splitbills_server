@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from app.api.schemas.group import group_schema, groups_schema
 from app.models.group import Group, insert_group, get_groups_by_user_id
 from app.models.user import User, get_user_by_id
+from app.models.group_member import GroupMember
 from app import auth
 from .common import load_request_data_as_json
 
@@ -44,7 +45,10 @@ def _create_new_group(data):
 
     for member in data["members"]:
         user = get_user_by_id(member["id"])
-        group.members.append(user)
+
+        group_member = GroupMember(user=user, group=group)
+
+        group.group_members.append(group_member)
 
     insert_group(group)
 

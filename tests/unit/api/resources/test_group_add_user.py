@@ -2,6 +2,7 @@ import json
 
 from app.models.user import User, insert_user, get_all_users
 from app.models.group import Group, insert_group, get_group_by_id, get_all_groups
+from app.models.group_member import GroupMember
 
 
 def test_add_user_to_existing_group(app, test_client, api_headers_auth):
@@ -19,8 +20,9 @@ def test_add_user_to_existing_group(app, test_client, api_headers_auth):
                 password=password)
     user2 = insert_user(user2)
 
+    group_member1 = GroupMember(user=user1)
     group = Group(name="Muster",
-                  members = [user1])
+                  group_members=[group_member1])
     insert_group(group)
 
     group_add_user_data = {
@@ -37,7 +39,7 @@ def test_add_user_to_existing_group(app, test_client, api_headers_auth):
 
     group = get_group_by_id(group.id)
 
-    assert len(group.members) == 2
+    assert len(group.group_members) == 2
 
 
 def test_dont_add_user_if_group_not_exist(test_client, api_headers_auth):
@@ -72,8 +74,9 @@ def test_dont_add_user_if_user_not_exist(test_client, api_headers_auth):
                 password=password)
     user = insert_user(user)
 
+    group_member = GroupMember(user=user)
     group = Group(name="Group",
-                  members=[user])
+                  group_members=[group_member])
     insert_group(group)
 
     group_add_user_data = {
@@ -104,8 +107,10 @@ def test_dont_add_user_if_user_already_in_group(test_client, api_headers_auth):
                 password=password)
     user2 = insert_user(user2)
 
+    group_member1 = GroupMember(user=user1)
+    group_member2 = GroupMember(user=user2)
     group = Group(name="Group",
-                  members=[user1, user2])
+                  group_members=[group_member1, group_member2])
     insert_group(group)
 
     group_add_user_data = {
@@ -119,7 +124,7 @@ def test_dont_add_user_if_user_already_in_group(test_client, api_headers_auth):
     json_response = json.loads(response.get_data(as_text=True))
 
     assert json_response["message"] == "User is already in group."
-    assert len(group.members) == 2
+    assert len(group.group_members) == 2
 
 
 def test_dont_add_user_if_user_not_in_group(test_client, api_headers_auth):
@@ -141,8 +146,9 @@ def test_dont_add_user_if_user_not_in_group(test_client, api_headers_auth):
                 password=password)
     user3 = insert_user(user3)
 
+    group_member1 = GroupMember(user=user1)
     group = Group(name="Group",
-                  members=[user1])
+                  group_members=[group_member1])
     insert_group(group)
 
     group_add_user_data = {
@@ -156,7 +162,7 @@ def test_dont_add_user_if_user_not_in_group(test_client, api_headers_auth):
     json_response = json.loads(response.get_data(as_text=True))
 
     assert json_response["message"] == "Forbidden"
-    assert len(group.members) == 1
+    assert len(group.group_members) == 1
 
 
 def test_dont_add_user_if_user_id_missing(test_client, api_headers_auth):
@@ -181,7 +187,7 @@ def test_dont_add_user_if_user_id_missing(test_client, api_headers_auth):
     json_response = json.loads(response.get_data(as_text=True))
 
     assert json_response["message"] == "Could not find all required fields."
-    assert len(group.members) == 0
+    assert len(group.group_members) == 0
 
 
 def test_dont_add_user_if_group_id_missing(test_client, api_headers_auth):
@@ -198,8 +204,9 @@ def test_dont_add_user_if_group_id_missing(test_client, api_headers_auth):
                 password=password)
     insert_user(user2)
 
+    group_member1 = GroupMember(user=user1)
     group = Group(name="Group",
-                  members=[user1])
+                  group_members=[group_member1])
     insert_group(group)
 
     group_add_user_data = {
@@ -212,4 +219,4 @@ def test_dont_add_user_if_group_id_missing(test_client, api_headers_auth):
     json_response = json.loads(response.get_data(as_text=True))
 
     assert json_response["message"] == "Could not find all required fields."
-    assert len(group.members) == 1
+    assert len(group.group_members) == 1
