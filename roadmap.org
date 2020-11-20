@@ -1,8 +1,7 @@
 * Roadmap
 
 ** TODO Work on groups
-*** TODO User should be able to add members to group on creating group
-     Should be possible to create group with or without group members
+*** DONE User should be able to add members to group on creating group
 *** TODO If group is already created user should be able to add other members
 *** TODO User should be able to delete group members
 *** TODO User should be able to modify group data
