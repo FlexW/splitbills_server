@@ -2,7 +2,7 @@ from flask import request, abort
 from flask_restful import Resource
 from marshmallow.exceptions import ValidationError
 from app import db
-from app.models.user import User, insert_user, get_user_by_email
+from app.models.user import User, insert_user, get_user_by_email, get_user_by_id
 from app.api.schemas.user import user_schema, users_schema
 from .common import load_request_data_as_json
 

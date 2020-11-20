@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from app.models.user import User, get_user_by_email, get_all_users
+from app.models.user import User, get_user_by_email, get_all_users, insert_user
 from app.api.schemas.user import user_schema
 
 
