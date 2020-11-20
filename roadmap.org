@@ -1,0 +1,29 @@
+* Roadmap
+
+** TODO Work on groups
+*** TODO User should be able to add members to group on creating group
+     Should be possible to create group with or without group members
+*** TODO If group is already created user should be able to add other members
+*** TODO User should be able to delete group members
+*** TODO User should be able to modify group data
+
+
+** TODO Work on bills
+*** TODO User should be able to add members to bill on creating bill
+    Bill without bill members shouldn't be valid
+*** TODO If bill is already created user should be able to add other members
+*** TODO User should be able to delete bill members
+*** TODO Server should check that sum of all amounts of all bill members is zero
+*** TODO User should be able to modify bill data
+
+
+** TODO Work on registration
+*** Implement verification for registration
+
+
+** TODO Work on users
+*** User should be able to modify password
+*** User should be able to modify email
+
+
+** TODO Implement friend mechanism
