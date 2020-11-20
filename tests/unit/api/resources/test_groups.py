@@ -21,13 +21,13 @@ def test_add_group(app, test_client, api_headers_auth):
     response = test_client.post("/groups",
                                 headers=api_headers_auth(user.email, password),
                                 data=json.dumps(group_data))
-    json_respone = json.loads(response.get_data(as_text=True))
+    json_response = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Created new group."
-    assert json_respone["group"]["id"] == 1
-    assert json_respone["group"]["name"] == group_data["name"]
+    assert json_response["message"] == "Created new group."
+    assert json_response["group"]["id"] == 1
+    assert json_response["group"]["name"] == group_data["name"]
 
-    group = get_group_by_id(json_respone["group"]["id"])
+    group = get_group_by_id(json_response["group"]["id"])
 
     assert group is not None
     assert len(group.members) == 1
