@@ -5,18 +5,22 @@ from app.models.group import Group, get_group_by_id, insert_group
 
 
 def test_add_group(app, test_client, api_headers_auth):
-    group_data = {
-        "name": "Muster"
-    }
-
     password = "securepassword"
 
     user = User(first_name="Max",
                 last_name="Muster",
                 email="muster@mail.de",
                 password=password)
-
     user = insert_user(user)
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user.id,
+            }
+        ]
+    }
 
     response = test_client.post("/groups",
                                 headers=api_headers_auth(user.email, password),

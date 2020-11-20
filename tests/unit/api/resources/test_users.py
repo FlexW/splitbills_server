@@ -69,7 +69,7 @@ def test_dont_add_user_without_first_name(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find field 'first_name'."
+    assert json_respone["message"] == "Could not find all required fields."
     assert len(get_all_users()) == 0
 
 
@@ -85,7 +85,7 @@ def test_dont_add_user_without_last_name(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find field 'last_name'."
+    assert json_respone["message"] == "Could not find all required fields."
     assert len(get_all_users()) == 0
 
 
@@ -101,7 +101,7 @@ def test_dont_add_user_without_email(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find field 'email'."
+    assert json_respone["message"] == "Could not find all required fields."
     assert len(get_all_users()) == 0
 
 
@@ -117,5 +117,5 @@ def test_dont_add_user_without_password(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find field 'password'."
+    assert json_respone["message"] == "Could not find all required fields."
     assert len(get_all_users()) == 0

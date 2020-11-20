@@ -2,11 +2,11 @@ from marshmallow import Schema, fields
 
 
 class UserSchema(Schema):
-    id = fields.Int(dump_only=True)
-    first_name = fields.Str()
-    last_name = fields.Str()
-    email = fields.Email()
-    password = fields.Str(load_only=True)
+    id = fields.Int(required=True)
+    first_name = fields.Str(required=True)
+    last_name = fields.Str(required=True)
+    email = fields.Email(required=True)
+    password = fields.Str(load_only=True, required=True)
 
 
 user_schema = UserSchema()

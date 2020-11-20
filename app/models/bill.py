@@ -1,6 +1,7 @@
 import datetime
 
 from app import db
+from .bill_member import BillMember
 
 
 class Bill(db.Model):
