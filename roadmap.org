@@ -26,3 +26,5 @@
 
 
 ** TODO Implement friend mechanism
+
+** TODO Refactor groups/members route to group/{id}/members

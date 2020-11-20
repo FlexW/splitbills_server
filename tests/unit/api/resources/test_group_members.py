@@ -30,7 +30,7 @@ def test_add_user_to_existing_group(app, test_client, api_headers_auth):
         "group_id": group.id
     }
 
-    response = test_client.post("/groups/add_user",
+    response = test_client.post("/groups/members",
                                 headers=api_headers_auth(user1.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -56,7 +56,7 @@ def test_dont_add_user_if_group_not_exist(test_client, api_headers_auth):
         "group_id": 1
     }
 
-    response = test_client.post("/groups/add_user",
+    response = test_client.post("/groups/members",
                                 headers=api_headers_auth(user.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -84,7 +84,7 @@ def test_dont_add_user_if_user_not_exist(test_client, api_headers_auth):
         "group_id": group.id
     }
 
-    response = test_client.post("/groups/add_user",
+    response = test_client.post("/groups/members",
                                 headers=api_headers_auth(user.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -118,7 +118,7 @@ def test_dont_add_user_if_user_already_in_group(test_client, api_headers_auth):
         "group_id": group.id
     }
 
-    response = test_client.post("/groups/add_user",
+    response = test_client.post("/groups/members",
                                 headers=api_headers_auth(user1.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -156,7 +156,7 @@ def test_dont_add_user_if_user_not_in_group(test_client, api_headers_auth):
         "group_id": group.id
     }
 
-    response = test_client.post("/groups/add_user",
+    response = test_client.post("/groups/members",
                                 headers=api_headers_auth(user2.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -181,7 +181,7 @@ def test_dont_add_user_if_user_id_missing(test_client, api_headers_auth):
         "group_id": group.id
     }
 
-    response = test_client.post("/groups/add_user",
+    response = test_client.post("/groups/members",
                                 headers=api_headers_auth(user.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -213,7 +213,7 @@ def test_dont_add_user_if_group_id_missing(test_client, api_headers_auth):
         "user_id": user2.id
     }
 
-    response = test_client.post("/groups/add_user",
+    response = test_client.post("/groups/members",
                                 headers=api_headers_auth(user1.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
