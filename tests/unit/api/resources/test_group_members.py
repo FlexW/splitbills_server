@@ -27,10 +27,9 @@ def test_add_user_to_existing_group(app, test_client, api_headers_auth):
 
     group_add_user_data = {
         "user_id": user2.id,
-        "group_id": group.id
     }
 
-    response = test_client.post("/groups/members",
+    response = test_client.post("/groups/{}/members".format(group.id),
                                 headers=api_headers_auth(user1.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -53,10 +52,9 @@ def test_dont_add_user_if_group_not_exist(test_client, api_headers_auth):
 
     group_add_user_data = {
         "user_id": user.id,
-        "group_id": 1
     }
 
-    response = test_client.post("/groups/members",
+    response = test_client.post("/groups/1/members",
                                 headers=api_headers_auth(user.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -81,10 +79,9 @@ def test_dont_add_user_if_user_not_exist(test_client, api_headers_auth):
 
     group_add_user_data = {
         "user_id": 2,
-        "group_id": group.id
     }
 
-    response = test_client.post("/groups/members",
+    response = test_client.post("/groups/{}/members".format(group.id),
                                 headers=api_headers_auth(user.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -115,10 +112,9 @@ def test_dont_add_user_if_user_already_in_group(test_client, api_headers_auth):
 
     group_add_user_data = {
         "user_id": user2.id,
-        "group_id": group.id
     }
 
-    response = test_client.post("/groups/members",
+    response = test_client.post("/groups/{}/members".format(group.id),
                                 headers=api_headers_auth(user1.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -153,10 +149,9 @@ def test_dont_add_user_if_user_not_in_group(test_client, api_headers_auth):
 
     group_add_user_data = {
         "user_id": user3.id,
-        "group_id": group.id
     }
 
-    response = test_client.post("/groups/members",
+    response = test_client.post("/groups/{}/members".format(group.id),
                                 headers=api_headers_auth(user2.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
@@ -177,46 +172,12 @@ def test_dont_add_user_if_user_id_missing(test_client, api_headers_auth):
     group = Group(name="Group")
     insert_group(group)
 
-    group_add_user_data = {
-        "group_id": group.id
-    }
+    group_add_user_data = {"bla": "bla"}
 
-    response = test_client.post("/groups/members",
+    response = test_client.post("/groups/{}/members".format(group.id),
                                 headers=api_headers_auth(user.email, password),
                                 data=json.dumps(group_add_user_data))
     json_response = json.loads(response.get_data(as_text=True))
 
     assert json_response["message"] == "Could not find all required fields."
     assert len(group.group_members) == 0
-
-
-def test_dont_add_user_if_group_id_missing(test_client, api_headers_auth):
-    password = "securepassword"
-
-    user1 = User(first_name="Max",
-                last_name="Muster",
-                email="muster1@mail.de",
-                password=password)
-    insert_user(user1)
-    user2 = User(first_name="Max",
-                last_name="Muster",
-                email="muster2@mail.de",
-                password=password)
-    insert_user(user2)
-
-    group_member1 = GroupMember(user=user1)
-    group = Group(name="Group",
-                  group_members=[group_member1])
-    insert_group(group)
-
-    group_add_user_data = {
-        "user_id": user2.id
-    }
-
-    response = test_client.post("/groups/members",
-                                headers=api_headers_auth(user1.email, password),
-                                data=json.dumps(group_add_user_data))
-    json_response = json.loads(response.get_data(as_text=True))
-
-    assert json_response["message"] == "Could not find all required fields."
-    assert len(group.group_members) == 1

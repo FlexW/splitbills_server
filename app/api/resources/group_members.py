@@ -34,12 +34,12 @@ def _add_user_to_group(user, group):
 class GroupMembersResource(Resource):
 
     @auth.login_required
-    def post(self):
+    def post(self, group_id):
         json_data = load_request_data_as_json(request)
 
         data = _load_group_add_user_data(json_data)
 
-        group = check_group_exists(data["group_id"])
+        group = check_group_exists(group_id)
         user = check_user_exists(data["user_id"])
 
         check_user_is_member_of_group(g.current_user, group)

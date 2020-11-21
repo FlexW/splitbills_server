@@ -13,7 +13,8 @@ def init_routes(api):
 
     api.add_resource(GroupResource, "/groups/<int:group_id>")
     api.add_resource(GroupsResource, "/groups")
-    api.add_resource(GroupMembersResource, "/groups/members")
-    api.add_resource(GroupMemberResource, "/groups/members/<int:user_id>")
+    api.add_resource(GroupMembersResource, "/groups/<int:group_id>/members")
+    api.add_resource(GroupMemberResource,
+                     "/groups/<int:group_id>/members/<int:user_id>")
 
     api.add_resource(BillsResource, "/bills")

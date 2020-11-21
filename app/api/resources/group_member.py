@@ -7,12 +7,6 @@ from .common import (load_request_data_as_json,
                      check_group_exists)
 
 
-def _load_group_id_data(json_data):
-    if "group_id" in json_data and type(json_data["group_id"]) == int:
-        return {"group_id": json_data["group_id"]}
-
-    abort({"message": "Missing field 'group_id'."})
-
 def _delete_user_from_group(user, group):
     for member in group.group_members:
         if member.user_id == user.id:
@@ -22,12 +16,8 @@ def _delete_user_from_group(user, group):
 class GroupMemberResource(Resource):
 
     @auth.login_required
-    def delete(self, user_id):
-        json_data = load_request_data_as_json(request)
-
-        data = _load_group_id_data(json_data)
-
-        group = check_group_exists(data["group_id"])
+    def delete(self, group_id, user_id):
+        group = check_group_exists(group_id)
 
         check_user_is_member_of_group(g.current_user, group)
 
