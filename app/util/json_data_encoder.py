@@ -1,4 +1,5 @@
 import datetime
+import decimal
 
 from app.util.converter import datetime_to_string
 

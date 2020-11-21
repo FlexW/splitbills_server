@@ -8,6 +8,8 @@ class Group(db.Model):
 
     group_members = db.relationship("GroupMember", back_populates="group")
 
+    bills = db.relationship("Bill", back_populates="group")
+
 
 def insert_group(group):
     db.session.add(group)
