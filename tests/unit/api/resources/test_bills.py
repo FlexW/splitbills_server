@@ -1,42 +1,161 @@
 import json
 import datetime
+import decimal
 
+from app.models.group_member import GroupMember
+from app.models.group import Group, insert_group
 from app.models.user import User, insert_user
-from app.models.bill import Bill, insert_bill
+from app.models.bill import Bill, insert_bill, get_bills_by_user_id, get_all_bills
 from app.models.bill_member import BillMember
 from app.util.json_data_encoder import json_data_encoder
 from app.util.converter import datetime_to_string
 
 
 def test_add_bill(app, test_client, api_headers_auth):
+    password = "securepassword"
     now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    insert_user(user1)
+
+    user2 = User(first_name="Max",
+                last_name="Muster",
+                email="muster2@mail.de",
+                password=password)
+    insert_user(user2)
 
     bill_data = {
         "description": "Important bill",
         "date": now,
-        "date_created": now
+        "date_created": now,
+        "members": [
+            {
+                "user_id": user1.id,
+                "amount": "20.00"
+            },
+            {
+                "user_id": user2.id,
+                "amount": "-20.00"
+            }
+        ]
     }
 
-    password = "securepassword"
-
-    user = User(first_name="Max",
-                last_name="Muster",
-                email="muster@mail.de",
-                password=password)
-    insert_user(user)
-
     response = test_client.post("/bills",
-                                headers=api_headers_auth(user.email, password),
+                                headers=api_headers_auth(user1.email, password),
                                 data=json.dumps(bill_data,
                                                 default=json_data_encoder))
     json_response = json.loads(response.get_data(as_text=True))
 
     assert json_response["message"] == "Created new bill."
-    assert json_response["bill"]["id"] == 1
-    assert json_response["bill"]["description"] == bill_data["description"]
-    assert json_response["bill"]["date"] == datetime_to_string(bill_data["date"])
-    assert (json_response["bill"]["date_created"]
-            == datetime_to_string(bill_data["date_created"]))
+    assert len(get_bills_by_user_id(user1.id)) == 1
+    assert len(get_bills_by_user_id(user2.id)) == 1
+
+    bill = get_bills_by_user_id(user1.id)[0]
+    assert bill.description == bill_data["description"]
+    assert bill.date == bill_data["date"]
+    assert bill.date_created == bill_data["date_created"]
+    assert bill.members[0].user == user1
+    assert (bill.members[0].amount
+            == decimal.Decimal(bill_data["members"][0]["amount"]))
+    assert bill.members[1].user == user2
+    assert (bill.members[1].amount
+            == decimal.Decimal(bill_data["members"][1]["amount"]))
+
+
+def test_add_bill_in_group(app, test_client, api_headers_auth):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    insert_user(user1)
+
+    user2 = User(first_name="Max",
+                last_name="Muster",
+                email="muster2@mail.de",
+                password=password)
+    insert_user(user2)
+
+    group = Group(name="Name",
+                  group_members=[GroupMember(user=user1), GroupMember(user=user2)])
+    insert_group(group)
+
+    bill_data = {
+        "description": "Important bill",
+        "date": now,
+        "date_created": now,
+        "group_id": group.id,
+        "members": [
+            {
+                "user_id": user1.id,
+                "amount": "20.00"
+            },
+            {
+                "user_id": user2.id,
+                "amount": "-20.00"
+            }
+        ]
+    }
+
+    response = test_client.post("/bills",
+                                headers=api_headers_auth(user1.email, password),
+                                data=json.dumps(bill_data,
+                                                default=json_data_encoder))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert json_response["message"] == "Created new bill."
+    assert len(get_bills_by_user_id(user1.id)) == 1
+    assert len(get_bills_by_user_id(user2.id)) == 1
+
+    bill = get_bills_by_user_id(user1.id)[0]
+    assert bill.group == group
+
+
+def test_dont_add_bill_if_amounts_sum_not_zero(test_client, api_headers_auth):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    insert_user(user1)
+
+    user2 = User(first_name="Max",
+                last_name="Muster",
+                email="muster2@mail.de",
+                password=password)
+    insert_user(user2)
+
+    bill_data = {
+        "description": "Important bill",
+        "date": now,
+        "date_created": now,
+        "members": [
+            {
+                "user_id": user1.id,
+                "amount": "20.00"
+            },
+            {
+                "user_id": user2.id,
+                "amount": "-20.01"
+            }
+        ]
+    }
+
+    response = test_client.post("/bills",
+                                headers=api_headers_auth(user1.email, password),
+                                data=json.dumps(bill_data,
+                                                default=json_data_encoder))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert json_response["message"] == "Sum of amounts must be zero."
+    assert len(get_all_bills()) == 0
 
 
 def test_get_bills_from_user(app, test_client, api_headers_auth):

@@ -5,6 +5,7 @@ class BillMember(db.Model):
     user_id = db.Column(db.Integer,
                      db.ForeignKey("user.id"),
                      primary_key=True)
+    user = db.relationship("User")
 
     bill_id = db.Column(db.Integer,
                         db.ForeignKey("bill.id"),
@@ -12,4 +13,4 @@ class BillMember(db.Model):
     bill = db.relationship("Bill",
                            back_populates="members")
 
-    amount = db.Column(db.String(512), nullable=False)
+    amount = db.Column(db.Numeric, nullable=False)
