@@ -65,11 +65,14 @@ which runs all the previous commands automatically.
 
 ## Api Description
 
-| Resource           | URI          | Method    |
-|:-------------------|:-------------|:----------|
-| List of all groups | /groups      | GET, POST |
-| Group detail       | /groups/{id} | GET, PUT  |
-| List of all bills  | /bills       | GET, POST |
-| Bill detail        | /bills/{id}  | GET, PUT  |
-| List of all users  | /users       | GET, POST |
-| User detail        | /users/{id}  | GET, PUT  |
+| Resource                         | URI                                  | Method |
+|:---------------------------------|:-------------------------------------|:-------|
+| Get list of all groups from user | /groups                              | GET    |
+| Create new group                 | /groups                              | POST   |
+| Change group detail              | /groups/{group_id}                   | PUT    |
+| Add group member                 | /groups/{group_id}/members           | POST   |
+| Delete group member              | /groups/{group_id}/members/{user_id} | DELETE |
+| Create new bill                  | /bills                               | POST   |
+| Get list of all bills from user  | /bills                               | GET    |
+| Create new user                  | /users                               | POST   |
+| Get user detail                  | /users/{id}                          | GET    |
