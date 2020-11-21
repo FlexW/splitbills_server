@@ -1,10 +1,10 @@
 * Roadmap
 
-** TODO Work on groups
+** DONE Work on groups
 *** DONE User should be able to add members to group on creating group
 *** DONE If group is already created user should be able to add other members
 *** DONE User should be able to delete group members
-*** TODO User should be able to modify group data
+*** DONE User should be able to modify group data
 
 
 ** TODO Work on bills
