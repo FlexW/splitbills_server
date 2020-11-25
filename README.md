@@ -20,6 +20,13 @@ Change into the cloned repository
 ```
 cd splitbills_server
 ```
+
+### Build with Nix
+If you have the [Nix](https://nixos.org/) package manager installed,
+you can simply run `nix-shell` and everything will be setup
+automatically. If you don't have Nix, read on.
+
+### Virtual environment with Python
 Create a virtual environment for python
 ```
 python -m venv env
@@ -34,6 +41,7 @@ Now install the dependencies.
 ```
 pip install -r requirements_lock.txt
 ```
+
 ## Run tests
 Run all tests with
 ```
