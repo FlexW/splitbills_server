@@ -21,7 +21,7 @@ def _load_bill_data(json_data):
                                                     "date",
                                                     "date_required",
                                                     "members.bill_id"))
-    except ValidationError as error:
+    except ValidationError:
         abort({"message": "Could not find all required fields."})
 
     return data
@@ -52,7 +52,8 @@ def _validate_bill(data):
     if "group_id" in data:
         group = check_group_exists(data["group_id"])
         for member in data["members"]:
-            check_user_is_member_of_group(get_user_by_id(member["user_id"]), group)
+            check_user_is_member_of_group(
+                get_user_by_id(member["user_id"]), group)
 
 
 def _create_new_bill(data):
@@ -85,7 +86,7 @@ class BillsResource(Resource):
 
         _validate_bill(data)
 
-        bill = _create_new_bill(data)
+        _create_new_bill(data)
 
         return {"message": "Created new bill."}
 
