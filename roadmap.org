@@ -8,13 +8,14 @@
 
 
 ** TODO Work on bills
-*** TODO User should be able to add members to bill on creating bill
+*** DONE User should be able to add members to bill on creating bill
     Bill without bill members shouldn't be valid
-*** TODO If bill is already created user should be able to add other members
-*** TODO User should be able to delete bill members
+*** DONE If bill is already created user should be able to add other members
+*** DONE User should be able to delete bill members
 *** TODO Server should check that sum of all amounts of all bill members is zero
 *** TODO User should be able to modify bill data
 *** TODO How to handle bills that get added to groups and not all member of bill are group members?
+*** TODO Don't expose date_created
 
 
 ** TODO Work on registration

@@ -13,7 +13,7 @@ def _load_group_data(json_data):
         data = group_schema.load(json_data, partial=("id",
                                                      "name",
                                                      "members"))
-    except ValidationError as error:
+    except ValidationError:
         abort({"message": "Could not find all required fields."})
 
     return data

@@ -1,6 +1,16 @@
 from flask import abort
 from app.models.group import get_group_by_id
 from app.models.user import get_user_by_id
+from app.models.bill import get_bill_by_id
+
+
+def check_bill_exists(bill_id):
+    bill = get_bill_by_id(bill_id)
+
+    if bill is None:
+        abort({"message": "Bill does not exist."})
+
+    return bill
 
 
 def load_request_data_as_json(request):

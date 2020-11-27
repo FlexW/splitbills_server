@@ -5,10 +5,12 @@ import decimal
 from app.models.group_member import GroupMember
 from app.models.group import Group, insert_group
 from app.models.user import User, insert_user
-from app.models.bill import Bill, insert_bill, get_bills_by_user_id, get_all_bills
+from app.models.bill import (Bill, insert_bill,
+                             get_bills_by_user_id,
+                             get_all_bills,
+                             get_bill_by_id)
 from app.models.bill_member import BillMember
 from app.util.json_data_encoder import json_data_encoder
-from app.util.converter import datetime_to_string
 
 
 def test_add_bill(app, test_client, api_headers_auth):
@@ -16,15 +18,15 @@ def test_add_bill(app, test_client, api_headers_auth):
     now = datetime.datetime.utcnow()
 
     user1 = User(first_name="Max",
-                last_name="Muster",
-                email="muster@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
     insert_user(user1)
 
     user2 = User(first_name="Max",
-                last_name="Muster",
-                email="muster2@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
     insert_user(user2)
 
     bill_data = {
@@ -44,7 +46,8 @@ def test_add_bill(app, test_client, api_headers_auth):
     }
 
     response = test_client.post("/bills",
-                                headers=api_headers_auth(user1.email, password),
+                                headers=api_headers_auth(
+                                    user1.email, password),
                                 data=json.dumps(bill_data,
                                                 default=json_data_encoder))
     json_response = json.loads(response.get_data(as_text=True))
@@ -70,15 +73,15 @@ def test_add_bill_in_group(app, test_client, api_headers_auth):
     now = datetime.datetime.utcnow()
 
     user1 = User(first_name="Max",
-                last_name="Muster",
-                email="muster@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
     insert_user(user1)
 
     user2 = User(first_name="Max",
-                last_name="Muster",
-                email="muster2@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
     insert_user(user2)
 
     group = Group(name="Name",
@@ -103,7 +106,8 @@ def test_add_bill_in_group(app, test_client, api_headers_auth):
     }
 
     response = test_client.post("/bills",
-                                headers=api_headers_auth(user1.email, password),
+                                headers=api_headers_auth(
+                                    user1.email, password),
                                 data=json.dumps(bill_data,
                                                 default=json_data_encoder))
     json_response = json.loads(response.get_data(as_text=True))
@@ -121,15 +125,15 @@ def test_dont_add_bill_if_amounts_sum_not_zero(test_client, api_headers_auth):
     now = datetime.datetime.utcnow()
 
     user1 = User(first_name="Max",
-                last_name="Muster",
-                email="muster@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
     insert_user(user1)
 
     user2 = User(first_name="Max",
-                last_name="Muster",
-                email="muster2@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
     insert_user(user2)
 
     bill_data = {
@@ -149,7 +153,8 @@ def test_dont_add_bill_if_amounts_sum_not_zero(test_client, api_headers_auth):
     }
 
     response = test_client.post("/bills",
-                                headers=api_headers_auth(user1.email, password),
+                                headers=api_headers_auth(
+                                    user1.email, password),
                                 data=json.dumps(bill_data,
                                                 default=json_data_encoder))
     json_response = json.loads(response.get_data(as_text=True))
@@ -199,9 +204,9 @@ def test_get_just_bills_from_user(app, test_client, api_headers_auth):
     now = datetime.datetime.utcnow()
 
     user1 = User(first_name="Max",
-                last_name="Muster",
-                email="muster@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
     insert_user(user1)
 
     user2 = User(first_name="Max",

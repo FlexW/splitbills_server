@@ -16,7 +16,8 @@ class Bill(db.Model):
     group = db.relationship("Group", back_populates="bills")
 
     members = db.relationship("BillMember",
-                              back_populates="bill")
+                              back_populates="bill",
+                              cascade="all, delete, delete-orphan")
 
 
 def insert_bill(bill):
@@ -34,3 +35,8 @@ def get_bills_by_user_id(user_id):
 def get_all_bills():
     bills = Bill.query.all()
     return bills
+
+
+def get_bill_by_id(bill_id):
+    bill = Bill.query.filter_by(id=bill_id).first()
+    return bill
