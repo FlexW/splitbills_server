@@ -16,9 +16,13 @@ pkgs.mkShell rec {
 
   venvDir = "./.venv";
 
-  buildInputs = with pkgs; [
-    python39Packages.python
-    python39Packages.venvShellHook
+  buildInputs = with pkgs.python38Packages; [
+    python
+    venvShellHook
+
+    (python-language-server.override {
+      inherit mccabe yapf pycodestyle pydocstyle pyflakes rope;
+    })
   ];
 
   postVenvCreation = ''
