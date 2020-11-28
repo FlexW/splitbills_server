@@ -73,14 +73,30 @@ which runs all the previous commands automatically.
 
 ## Api Description
 
+### Groups
+
 | Resource                         | URI                                  | Method |
 |:---------------------------------|:-------------------------------------|:-------|
-| Get list of all groups from user | /groups                              | GET    |
 | Create new group                 | /groups                              | POST   |
+| Delete group                     | /groups/{group_id}                   | DELETE |
+| Get list of all groups from user | /groups                              | GET    |
 | Change group detail              | /groups/{group_id}                   | PUT    |
 | Add group member                 | /groups/{group_id}/members           | POST   |
 | Delete group member              | /groups/{group_id}/members/{user_id} | DELETE |
+| Get all bills from group         | /groups/{group_id}/bills             | GET    |
+
+### Bills
+
+| Resource                         | URI                                  | Method |
+|:---------------------------------|:-------------------------------------|:-------|
 | Create new bill                  | /bills                               | POST   |
+| Delete bill                      | /bills/{bill_id}                     | DELETE |
+| Change bill detail               | /bills/{bill_id}                     | PUT    |
 | Get list of all bills from user  | /bills                               | GET    |
+
+### Users
+
+| Resource                         | URI                                  | Method |
+|:---------------------------------|:-------------------------------------|:-------|
 | Create new user                  | /users                               | POST   |
 | Get user detail                  | /users/{id}                          | GET    |
