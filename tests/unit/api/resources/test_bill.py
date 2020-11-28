@@ -318,3 +318,43 @@ def test_dont_change_bill_if_amounts_sum_is_not_zero(test_client, api_headers_au
     assert bill.members[0].amount == bill_member1.amount
     assert bill.members[1].user_id == bill_member2.user_id
     assert bill.members[1].amount == bill_member2.amount
+
+
+def test_delete_existing_bill(test_client, api_headers_auth):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+
+    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
+    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+
+    bill1 = Bill(description="Bill",
+                 date=now,
+                 date_created=now,
+                 members=[bill_member1, bill_member2])
+    bill_id = insert_bill(bill1).id
+
+    assert bill1.valid is True
+
+    response = test_client.delete("/bills/{}".format(bill_id),
+                                  headers=api_headers_auth(user1.email, password))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert json_response["message"] == "Deleted bill."
+    assert bill1.valid is False

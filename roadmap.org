@@ -1,10 +1,11 @@
 * Roadmap
 
-** DONE Work on groups
+** TODO Work on groups
 *** DONE User should be able to add members to group on creating group
 *** DONE If group is already created user should be able to add other members
 *** DONE User should be able to delete group members
 *** DONE User should be able to modify group data
+*** TODO Allow deletion of groups
 
 
 ** TODO Work on bills
@@ -16,6 +17,7 @@
 *** DONE User should be able to modify bill data
 *** TODO How to handle bills that get added to groups and not all member of bill are group members?
 *** TODO Don't expose date_created
+*** TODO Allow to delete bills
 
 
 ** TODO Work on registration

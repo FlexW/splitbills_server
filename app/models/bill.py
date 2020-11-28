@@ -12,6 +12,7 @@ class Bill(db.Model):
     date_created = db.Column(db.DateTime,
                              default=datetime.datetime.utcnow,
                              nullable=False)
+    valid = db.Column(db.Boolean, default=True, nullable=False)
 
     group = db.relationship("Group", back_populates="bills")
 

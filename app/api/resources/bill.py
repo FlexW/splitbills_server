@@ -115,6 +115,10 @@ def _validate_bill_data(data):
         _validate_bill_members_data(data)
 
 
+def _delete_bill(bill):
+    bill.valid = False
+
+
 class BillResource(Resource):
 
     @auth.login_required
@@ -132,3 +136,13 @@ class BillResource(Resource):
         _update_bill_data(bill, data)
 
         return {"message": "Changed bill."}
+
+    @auth.login_required
+    def delete(self, bill_id):
+        bill = check_bill_exists(bill_id)
+
+        _check_user_is_allowed_to_modify_bill(g.current_user, bill)
+
+        _delete_bill(bill)
+
+        return {"message": "Deleted bill."}
