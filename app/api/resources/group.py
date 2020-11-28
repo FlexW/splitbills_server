@@ -27,6 +27,9 @@ def _update_group_data(group, data):
 def _delete_group(group):
     group.valid = False
 
+    for bill in group.bills:
+        bill.valid = False
+
 
 class GroupResource(Resource):
 
