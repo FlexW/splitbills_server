@@ -17,7 +17,8 @@
 *** DONE User should be able to modify bill data
 *** TODO How to handle bills that get added to groups and not all member of bill are group members?
 *** TODO Don't expose date_created
-*** TODO Allow to delete bills
+*** DONE Allow to delete bills
+*** TODO Store amount as integer in cents
 
 
 ** TODO Work on registration
