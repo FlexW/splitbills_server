@@ -115,3 +115,25 @@ def test_get_just_groups_from_user(app, test_client, api_headers_auth):
     assert len(json_respone["groups"]) == 2
     assert json_respone["groups"][0]["name"] == group2.name
     assert json_respone["groups"][1]["name"] == group3.name
+
+
+def test_get_only_non_removed_groups(test_client, api_headers_auth):
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+
+    group1 = Group(name="G1", group_members=[GroupMember(user=user1)])
+    insert_group(group1)
+    group2 = Group(
+        name="G1", group_members=[GroupMember(user=user1)], valid=False)
+    insert_group(group2)
+
+    response = test_client.get("/groups",
+                               headers=api_headers_auth(user1.email, password))
+    json_respone = json.loads(response.get_data(as_text=True))
+
+    assert len(json_respone["groups"]) == 1
+    assert json_respone["groups"][0]["id"] == group1.id

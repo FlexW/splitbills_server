@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from app import db
 from app.models.group_member import GroupMember
 
@@ -26,6 +27,12 @@ def get_group_by_id(group_id):
 
 def get_groups_by_user_id(user_id):
     groups = Group.query.filter(Group.group_members.any(user_id=user_id)).all()
+    return groups
+
+
+def get_valid_groups_by_user_id(user_id):
+    groups = Group.query.filter(and_(Group.valid == True,
+                                     Group.group_members.any(user_id=user_id))).all()
     return groups
 
 

@@ -2,8 +2,8 @@ from flask import abort, request, g
 from flask_restful import Resource
 from marshmallow import ValidationError
 from app.api.schemas.group import group_schema, groups_schema
-from app.models.group import Group, insert_group, get_groups_by_user_id
-from app.models.user import User, get_user_by_id
+from app.models.group import Group, insert_group, get_valid_groups_by_user_id
+from app.models.user import get_user_by_id
 from app.models.group_member import GroupMember
 from app import auth
 from .common import load_request_data_as_json
@@ -73,6 +73,6 @@ class GroupsResource(Resource):
     def get(self):
         current_user = g.current_user
 
-        groups = get_groups_by_user_id(current_user.id)
+        groups = get_valid_groups_by_user_id(current_user.id)
 
         return {"groups": groups_schema.dump(groups)}
