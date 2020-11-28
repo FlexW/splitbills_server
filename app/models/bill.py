@@ -3,6 +3,7 @@ import datetime
 from sqlalchemy import and_
 from app import db
 from .bill_member import BillMember
+from .group import Group
 
 
 class Bill(db.Model):
@@ -48,3 +49,9 @@ def get_all_bills():
 def get_bill_by_id(bill_id):
     bill = Bill.query.filter_by(id=bill_id).first()
     return bill
+
+
+def get_valid_bills_by_group_id(group_id):
+    bills = Bill.query.filter(and_(Bill.valid == True,
+                                   Bill.group_id == group_id)).all()
+    return bills

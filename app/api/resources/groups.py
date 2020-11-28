@@ -16,7 +16,7 @@ def _load_group_data(json_data):
                                                      "members.first_name",
                                                      "members.last_name",
                                                      "members.email"))
-    except ValidationError as error:
+    except ValidationError:
         abort({"message": "Could not find all required fields."})
 
     return data

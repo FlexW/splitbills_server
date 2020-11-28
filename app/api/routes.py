@@ -4,6 +4,7 @@ from .resources.group_members import GroupMembersResource
 from .resources.group_member import GroupMemberResource
 from .resources.groups import GroupsResource
 from .resources.group import GroupResource
+from .resources.group_bills import GroupBillsResource
 from .resources.bills import BillsResource
 from .resources.bill import BillResource
 
@@ -17,6 +18,8 @@ def init_routes(api):
     api.add_resource(GroupMembersResource, "/groups/<int:group_id>/members")
     api.add_resource(GroupMemberResource,
                      "/groups/<int:group_id>/members/<int:user_id>")
+    api.add_resource(GroupBillsResource,
+                     "/groups/<int:group_id>/bills")
 
     api.add_resource(BillResource, "/bills/<int:bill_id>")
     api.add_resource(BillsResource, "/bills")
