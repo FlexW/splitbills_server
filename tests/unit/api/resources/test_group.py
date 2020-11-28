@@ -54,3 +54,23 @@ def test_dont_change_name_if_user_not_member_of_group(test_client, api_headers_a
 
     assert json_response["message"] == "Forbidden"
     assert group.name == "Name"
+
+
+def test_delete_existing_group(test_client, api_headers_auth):
+    password = "secretpassword"
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    group = Group(name="Name", group_members=[GroupMember(user=user1)])
+    insert_group(group)
+
+    assert group.valid is True
+
+    response = test_client.delete("/groups/{}".format(group.id),
+                                  headers=api_headers_auth(user1.email, password))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert json_response["message"] == "Deleted group."
+    assert group.valid is False

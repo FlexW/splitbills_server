@@ -5,6 +5,7 @@ from app.models.group_member import GroupMember
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+    valid = db.Column(db.Boolean, default=True, nullable=False)
 
     group_members = db.relationship("GroupMember", back_populates="group")
 
