@@ -54,6 +54,7 @@ def _create_new_group(data):
 
     return group
 
+
 class GroupsResource(Resource):
 
     @auth.login_required
