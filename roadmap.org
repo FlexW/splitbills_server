@@ -5,7 +5,7 @@
 *** DONE If group is already created user should be able to add other members
 *** DONE User should be able to delete group members
 *** DONE User should be able to modify group data
-*** TODO Allow deletion of groups
+*** DONE Allow deletion of groups
 
 
 ** TODO Work on bills
