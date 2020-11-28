@@ -1,5 +1,6 @@
 import datetime
 
+from sqlalchemy import and_
 from app import db
 from .bill_member import BillMember
 
@@ -30,6 +31,12 @@ def insert_bill(bill):
 
 def get_bills_by_user_id(user_id):
     bills = Bill.query.filter(Bill.members.any(user_id=user_id)).all()
+    return bills
+
+
+def get_valid_bills_by_user_id(user_id):
+    bills = Bill.query.filter(and_(Bill.valid == True,
+                                   Bill.members.any(user_id=user_id))).all()
     return bills
 
 

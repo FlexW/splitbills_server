@@ -7,7 +7,7 @@ from app import auth
 from app.api.schemas.bill import bill_schema, bills_schema
 from app.models.group import get_group_by_id
 from app.models.bill_member import BillMember
-from app.models.bill import Bill, insert_bill, get_bills_by_user_id
+from app.models.bill import Bill, insert_bill, get_valid_bills_by_user_id
 from app.models.user import get_user_by_id
 from .common import (load_request_data_as_json,
                      check_user_exists,
@@ -94,6 +94,6 @@ class BillsResource(Resource):
     def get(self):
         current_user = g.current_user
 
-        bills = get_bills_by_user_id(current_user.id)
+        bills = get_valid_bills_by_user_id(current_user.id)
 
         return {"bills": bills_schema.dump(bills)}

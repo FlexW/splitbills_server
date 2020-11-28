@@ -238,3 +238,42 @@ def test_get_just_bills_from_user(app, test_client, api_headers_auth):
 
     assert len(json_response["bills"]) == 1
     assert json_response["bills"][0]["description"] == bill1.description
+
+
+def test_get_only_not_removed_bills(test_client, api_headers_auth):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    bill1 = Bill(description="Bill",
+                 members=[BillMember(user=user1, amount="-2.00"),
+                          BillMember(user=user2, amount="2.00")],
+                 date=now,
+                 date_created=now)
+    insert_bill(bill1)
+
+    bill2 = Bill(description="Bill",
+                 members=[BillMember(user=user1, amount="-2.00"),
+                          BillMember(user=user2, amount="2.00")],
+                 date=now,
+                 date_created=now,
+                 valid=False)
+    insert_bill(bill2)
+
+    response = test_client.get("/bills",
+                               headers=api_headers_auth(user1.email, password))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert len(json_response["bills"]) == 1
+    assert json_response["bills"][0]["id"] == bill1.id
