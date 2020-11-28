@@ -18,7 +18,7 @@
 *** TODO How to handle bills that get added to groups and not all member of bill are group members?
 *** TODO Don't expose date_created
 *** DONE Allow to delete bills
-*** TODO Store amount as integer in cents
+*** DONE Store amount as integer in cents
 
 
 ** TODO Work on registration
