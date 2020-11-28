@@ -13,4 +13,4 @@ class BillMember(db.Model):
     bill = db.relationship("Bill",
                            back_populates="members")
 
-    amount = db.Column(db.Numeric, nullable=False)
+    amount = db.Column(db.Integer, nullable=False)

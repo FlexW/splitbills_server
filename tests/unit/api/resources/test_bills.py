@@ -1,14 +1,13 @@
 import json
 import datetime
-import decimal
 
 from app.models.group_member import GroupMember
 from app.models.group import Group, insert_group
 from app.models.user import User, insert_user
-from app.models.bill import (Bill, insert_bill,
+from app.models.bill import (Bill,
+                             insert_bill,
                              get_bills_by_user_id,
-                             get_all_bills,
-                             get_bill_by_id)
+                             get_all_bills)
 from app.models.bill_member import BillMember
 from app.util.json_data_encoder import json_data_encoder
 
@@ -36,11 +35,11 @@ def test_add_bill(app, test_client, api_headers_auth):
         "members": [
             {
                 "user_id": user1.id,
-                "amount": "20.00"
+                "amount": 200
             },
             {
                 "user_id": user2.id,
-                "amount": "-20.00"
+                "amount": -200
             }
         ]
     }
@@ -62,10 +61,10 @@ def test_add_bill(app, test_client, api_headers_auth):
     assert bill.date_created == bill_data["date_created"]
     assert bill.members[0].user == user1
     assert (bill.members[0].amount
-            == decimal.Decimal(bill_data["members"][0]["amount"]))
+            == bill_data["members"][0]["amount"])
     assert bill.members[1].user == user2
     assert (bill.members[1].amount
-            == decimal.Decimal(bill_data["members"][1]["amount"]))
+            == bill_data["members"][1]["amount"])
 
 
 def test_add_bill_in_group(app, test_client, api_headers_auth):
@@ -96,11 +95,11 @@ def test_add_bill_in_group(app, test_client, api_headers_auth):
         "members": [
             {
                 "user_id": user1.id,
-                "amount": "20.00"
+                "amount": 200
             },
             {
                 "user_id": user2.id,
-                "amount": "-20.00"
+                "amount": -200
             }
         ]
     }
@@ -143,11 +142,11 @@ def test_dont_add_bill_if_amounts_sum_not_zero(test_client, api_headers_auth):
         "members": [
             {
                 "user_id": user1.id,
-                "amount": "20.00"
+                "amount": 200
             },
             {
                 "user_id": user2.id,
-                "amount": "-20.01"
+                "amount": -201
             }
         ]
     }
@@ -173,7 +172,7 @@ def test_get_bills_from_user(app, test_client, api_headers_auth):
                 password=password)
     insert_user(user)
 
-    bill_member1 = BillMember(user_id=user.id, amount="1.00")
+    bill_member1 = BillMember(user_id=user.id, amount=1)
 
     bill1 = Bill(description="Bill",
                  date=now,
@@ -182,7 +181,7 @@ def test_get_bills_from_user(app, test_client, api_headers_auth):
     bill_member1.bill = bill1
     bill1.members.append(bill_member1)
 
-    bill_member2 = BillMember(user_id=user.id, amount="1.00")
+    bill_member2 = BillMember(user_id=user.id, amount=1)
 
     bill2 = Bill(description="Bill2",
                  date=now,

@@ -1,6 +1,5 @@
 import json
 import datetime
-import decimal
 
 
 from app.models.user import User, insert_user
@@ -44,15 +43,15 @@ def test_add_members_to_bill_if_bill_already_created(test_client, api_headers_au
         "members": [
             {
                 "user_id": user1.id,
-                "amount": "-3.00"
+                "amount": -3
             },
             {
                 "user_id": user2.id,
-                "amount": "-3.00"
+                "amount": -3
             },
             {
                 "user_id": user3.id,
-                "amount": "6.00"
+                "amount": 6
             }
         ]
     }
@@ -69,13 +68,13 @@ def test_add_members_to_bill_if_bill_already_created(test_client, api_headers_au
     assert len(bill.members) == 3
 
     assert bill.members[0].user_id == user1.id
-    assert bill.members[0].amount == decimal.Decimal(-3.00)
+    assert bill.members[0].amount == data["members"][0]["amount"]
 
     assert bill.members[1].user_id == user2.id
-    assert bill.members[1].amount == decimal.Decimal(-3.00)
+    assert bill.members[1].amount == data["members"][1]["amount"]
 
     assert bill.members[2].user_id == user3.id
-    assert bill.members[2].amount == decimal.Decimal(6.00)
+    assert bill.members[2].amount == data["members"][2]["amount"]
 
 
 def test_delete_members_from_bill_if_bill_already_created(test_client,
@@ -100,9 +99,9 @@ def test_delete_members_from_bill_if_bill_already_created(test_client,
                  password=password)
     insert_user(user3)
 
-    bill_member1 = BillMember(user_id=user1.id, amount="-3.00")
-    bill_member2 = BillMember(user_id=user2.id, amount="-3.00")
-    bill_member3 = BillMember(user_id=user3.id, amount="6.00")
+    bill_member1 = BillMember(user_id=user1.id, amount=-3)
+    bill_member2 = BillMember(user_id=user2.id, amount=-3)
+    bill_member3 = BillMember(user_id=user3.id, amount=6)
 
     bill1 = Bill(description="Bill",
                  date=now,
@@ -114,11 +113,11 @@ def test_delete_members_from_bill_if_bill_already_created(test_client,
         "members": [
             {
                 "user_id": user1.id,
-                "amount": "5.00"
+                "amount": 5
             },
             {
                 "user_id": user2.id,
-                "amount": "-5.00"
+                "amount": -5
             }
         ]
     }
@@ -135,10 +134,10 @@ def test_delete_members_from_bill_if_bill_already_created(test_client,
     assert len(bill.members) == 2
 
     assert bill.members[0].user_id == user1.id
-    assert bill.members[0].amount == decimal.Decimal(5.00)
+    assert bill.members[0].amount == data["members"][0]["amount"]
 
     assert bill.members[1].user_id == user2.id
-    assert bill.members[1].amount == decimal.Decimal(-5.00)
+    assert bill.members[1].amount == data["members"][1]["amount"]
 
 
 def test_change_description_of_existing_bill(test_client, api_headers_auth):
@@ -279,8 +278,8 @@ def test_dont_change_bill_if_amounts_sum_is_not_zero(test_client, api_headers_au
                  password=password)
     insert_user(user3)
 
-    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
-    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+    bill_member1 = BillMember(user_id=user1.id, amount=5)
+    bill_member2 = BillMember(user_id=user2.id, amount=-5)
 
     bill1 = Bill(description="Bill",
                  date=now,
@@ -292,15 +291,15 @@ def test_dont_change_bill_if_amounts_sum_is_not_zero(test_client, api_headers_au
         "members": [
             {
                 "user_id": user1.id,
-                "amount": "-4.00"
+                "amount": -4
             },
             {
                 "user_id": user2.id,
-                "amount": "-3.00"
+                "amount": -3
             },
             {
                 "user_id": user3.id,
-                "amount": "6.00"
+                "amount": 6
             }
         ]
     }

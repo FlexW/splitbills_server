@@ -1,5 +1,3 @@
-import decimal
-
 from flask import abort, request, g
 from flask_restful import Resource
 from marshmallow import ValidationError
@@ -28,13 +26,13 @@ def _load_bill_data(json_data):
 
 
 def _validate_bill(data):
-    amounts_sum = decimal.Decimal(0)
+    amounts_sum = 0
     creditor_ids_in_group = []
     debtor_ids_in_group = []
 
     for member in data["members"]:
         user = check_user_exists(member["user_id"])
-        amount = decimal.Decimal(member["amount"])
+        amount = member["amount"]
         amounts_sum += amount
 
         if amount > 0:
@@ -65,7 +63,7 @@ def _create_new_bill(data):
         user = get_user_by_id(member["user_id"])
         bill_member = BillMember(user=user,
                                  bill=bill,
-                                 amount=decimal.Decimal(member["amount"]))
+                                 amount=member["amount"])
         bill.members.append(bill_member)
 
     if "group_id" in data:
