@@ -99,4 +99,12 @@ which runs all the previous commands automatically.
 | Resource                         | URI                                  | Method |
 |:---------------------------------|:-------------------------------------|:-------|
 | Create new user                  | /users                               | POST   |
-| Get user detail                  | /users/{id}                          | GET    |
+| Get user detail                  | /users/{user_id}                          | GET    |
+
+
+### Authentication
+| Resource                 | URI                | Method |
+|:-------------------------|:-------------------|:-------|
+| Authenticate             | /tokens            | POST   |
+| Revoke or unrevoke token | /tokens/{token_id} | PUT    |
+| Refresh token            | /tokens/refresh    | POST   |
