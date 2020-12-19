@@ -7,9 +7,12 @@ from .resources.group import GroupResource
 from .resources.group_bills import GroupBillsResource
 from .resources.bills import BillsResource
 from .resources.bill import BillResource
+from .resources.auth import AuthResource
 
 
 def init_routes(api):
+    api.add_resource(AuthResource, "/auth")
+
     api.add_resource(UserResource, "/users/<int:user_id>")
     api.add_resource(UsersResource, "/users")
 

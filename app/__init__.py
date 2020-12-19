@@ -1,17 +1,22 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
+from flask_jwt_extended import JWTManager
 from .config import config
 
 auth = HTTPBasicAuth()
 db = SQLAlchemy()
+jwt = JWTManager()
 
 # Import to get registered
 from app.authentication import verify_password
 
+
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+
+    jwt.init_app(app)
 
     register_api(app)
 
