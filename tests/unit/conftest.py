@@ -38,3 +38,14 @@ def api_headers_auth():
             "Content-Type": "application/json"
         }
     return _api_headers_auth
+
+
+@pytest.fixture
+def api_headers_bearer():
+    def _api_headers_bearer(token):
+        return {
+            "Authorization": "Bearer " + token,
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    return _api_headers_bearer

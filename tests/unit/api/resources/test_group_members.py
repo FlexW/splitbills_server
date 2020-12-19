@@ -94,14 +94,14 @@ def test_dont_add_user_if_user_already_in_group(test_client, api_headers_auth):
     password = "securepassword"
 
     user1 = User(first_name="Max",
-                last_name="Muster",
-                email="muster@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
     user1 = insert_user(user1)
     user2 = User(first_name="Max",
-                last_name="Muster",
-                email="muster2@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
     user2 = insert_user(user2)
 
     group_member1 = GroupMember(user=user1)

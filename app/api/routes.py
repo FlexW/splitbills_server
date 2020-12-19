@@ -8,10 +8,12 @@ from .resources.group_bills import GroupBillsResource
 from .resources.bills import BillsResource
 from .resources.bill import BillResource
 from .resources.tokens import TokensResource
+from .resources.token import TokenResource
 
 
 def init_routes(api):
     api.add_resource(TokensResource, "/tokens")
+    api.add_resource(TokenResource, "/tokens/<int:token_id>")
 
     api.add_resource(UserResource, "/users/<int:user_id>")
     api.add_resource(UsersResource, "/users")

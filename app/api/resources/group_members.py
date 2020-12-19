@@ -15,7 +15,7 @@ from .common import (load_request_data_as_json,
 def _load_group_add_user_data(json_data):
     try:
         data = group_add_user_schema.load(json_data)
-    except ValidationError as error:
+    except ValidationError:
         abort({"message": "Could not find all required fields."})
 
     return data

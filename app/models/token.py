@@ -98,3 +98,5 @@ def add_token_to_database(encoded_token, identity_claim):
     )
     db.session.add(db_token)
     db.session.commit()
+
+    return db_token.id
