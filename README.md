@@ -39,7 +39,7 @@ source env/bin/activate
 ```
 Now install the dependencies.
 ```
-pip install -r requirements_lock.txt
+pip install -r requirements.txt
 ```
 
 ## Run tests
