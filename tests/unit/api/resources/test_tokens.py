@@ -1,6 +1,7 @@
 import json
 
 from app.models.user import User, insert_user
+from app.models.token import get_user_tokens
 
 
 def test_get_token(test_client, api_headers):
@@ -17,11 +18,35 @@ def test_get_token(test_client, api_headers):
     }
 
     response = test_client.post(
-        "/auth", headers=api_headers, data=json.dumps(data))
+        "/tokens", headers=api_headers, data=json.dumps(data))
     json_response = json.loads(response.get_data(as_text=True))
 
+    assert response.status_code == 200
     assert "access_token" in json_response
+    assert "refresh_token" in json_response
 
+
+def test_token_gets_saved(test_client, api_headers):
+    password = "secret"
+    user = User(email="muster@mail.de",
+                password=password,
+                first_name="Max",
+                last_name="Muster")
+    insert_user(user)
+
+    data = {
+        "email": user.email,
+        "password": password
+    }
+
+    response = test_client.post(
+        "/tokens", headers=api_headers, data=json.dumps(data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    tokens = get_user_tokens(user.email)
+    assert len(tokens) == 2
+    assert tokens[0].revoked == False
+    assert tokens[1].revoked == False
 
 def test_tokens_are_different(test_client, api_headers):
     password = "secret"
@@ -46,13 +71,14 @@ def test_tokens_are_different(test_client, api_headers):
     }
 
     response1 = test_client.post(
-        "/auth", headers=api_headers, data=json.dumps(data1))
+        "/tokens", headers=api_headers, data=json.dumps(data1))
     json_response1 = json.loads(response1.get_data(as_text=True))
     response2 = test_client.post(
-        "/auth", headers=api_headers, data=json.dumps(data2))
+        "/tokens", headers=api_headers, data=json.dumps(data2))
     json_response2 = json.loads(response2.get_data(as_text=True))
 
     assert json_response1["access_token"] != json_response2["access_token"]
+    assert json_response1["refresh_token"] != json_response2["refresh_token"]
 
 
 def test_dont_get_token_if_not_registered(test_client, api_headers):
@@ -62,7 +88,7 @@ def test_dont_get_token_if_not_registered(test_client, api_headers):
     }
 
     response = test_client.post(
-        "/auth", headers=api_headers, data=json.dumps(data))
+        "/tokens", headers=api_headers, data=json.dumps(data))
     json_response = json.loads(response.get_data(as_text=True))
 
     assert "message" in json_response
@@ -83,9 +109,10 @@ def test_dont_get_token_if_password_incorrect(test_client, api_headers):
     }
 
     response = test_client.post(
-        "/auth", headers=api_headers, data=json.dumps(data))
+        "/tokens", headers=api_headers, data=json.dumps(data))
     json_response = json.loads(response.get_data(as_text=True))
 
+    assert response.status_code == 403
     assert "message" in json_response
     assert json_response["message"] == "Incorrect email or password"
 
@@ -103,9 +130,10 @@ def test_error_on_password_missing(test_client, api_headers):
     }
 
     response = test_client.post(
-        "/auth", headers=api_headers, data=json.dumps(data))
+        "/tokens", headers=api_headers, data=json.dumps(data))
     json_response = json.loads(response.get_data(as_text=True))
 
+    assert response.status_code == 400
     assert "message" in json_response
     assert json_response["message"] == "Missing attribute password"
 
@@ -123,8 +151,9 @@ def test_error_on_email_missing(test_client, api_headers):
     }
 
     response = test_client.post(
-        "/auth", headers=api_headers, data=json.dumps(data))
+        "/tokens", headers=api_headers, data=json.dumps(data))
     json_response = json.loads(response.get_data(as_text=True))
 
+    assert response.status_code == 400
     assert "message" in json_response
     assert json_response["message"] == "Missing attribute email"
