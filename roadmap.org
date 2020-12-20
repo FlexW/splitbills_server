@@ -44,7 +44,7 @@
 *** DONE Token
 *** DONE TokenRefresh
 *** DONE Users
-*** TODO User
+*** DONE User
 *** TODO Groups
 *** TODO Group
 *** TODO GroupBills
