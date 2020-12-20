@@ -43,7 +43,7 @@
 *** DONE Tokens
 *** DONE Token
 *** DONE TokenRefresh
-*** TODO Users
+*** DONE Users
 *** TODO User
 *** TODO Groups
 *** TODO Group
