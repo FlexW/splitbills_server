@@ -27,6 +27,10 @@ def test_refresh_token(test_client, api_headers, api_headers_bearer):
     json_response = json.loads(response.get_data(as_text=True))
 
     assert response.status_code == 201
+
+    assert "message" in json_response
+    assert json_response["message"] == "Token refreshed"
+
     assert "access_token" in json_response
     assert "id" in json_response["access_token"]
     assert "token" in json_response["access_token"]

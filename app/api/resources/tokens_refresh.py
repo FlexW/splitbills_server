@@ -14,6 +14,8 @@ class TokensRefreshResource(Resource):
             access_token, current_app.config['JWT_IDENTITY_CLAIM'])
 
         result = {
+            "message": "Token refreshed",
+
             "access_token": {
                 "id": access_token_id,
                 "token": access_token

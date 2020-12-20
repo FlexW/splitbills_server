@@ -18,7 +18,7 @@ def test_add_non_existing_user(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Created new user."
+    assert json_respone["message"] == "Created new user"
     assert json_respone["user"]["id"] == 1
     assert json_respone["user"]["first_name"] == user_data["first_name"]
     assert json_respone["user"]["last_name"] == user_data["last_name"]
@@ -26,6 +26,7 @@ def test_add_non_existing_user(app, test_client, api_headers):
     with pytest.raises(KeyError):
         json_respone["user"]["password"]
 
+    assert response.status_code == 201
     assert get_user_by_email(user_data["email"]) is not None
 
 
@@ -53,11 +54,12 @@ def test_dont_add_existing_user(app, test_client, api_headers):
                                 data=json.dumps(user_data2))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "User already exists."
+    assert response.status_code == 400
+    assert json_respone["message"] == "User already exists"
     assert len(get_all_users()) == 1
 
 
-def test_dont_add_user_without_first_name(app, test_client, api_headers):
+def test_error_on_first_name_missing(app, test_client, api_headers):
     user_data = {
         "last_name": "Muster",
         "email": "muster@mail.de",
@@ -69,7 +71,8 @@ def test_dont_add_user_without_first_name(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find all required fields."
+    assert response.status_code == 400
+    assert json_respone["message"] == "Missing attribute first_name"
     assert len(get_all_users()) == 0
 
 
@@ -85,7 +88,8 @@ def test_dont_add_user_without_last_name(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find all required fields."
+    assert response.status_code == 400
+    assert json_respone["message"] == "Missing attribute last_name"
     assert len(get_all_users()) == 0
 
 
@@ -101,7 +105,8 @@ def test_dont_add_user_without_email(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find all required fields."
+    assert response.status_code == 400
+    assert json_respone["message"] == "Missing attribute email"
     assert len(get_all_users()) == 0
 
 
@@ -117,5 +122,6 @@ def test_dont_add_user_without_password(app, test_client, api_headers):
                                 data=json.dumps(user_data))
     json_respone = json.loads(response.get_data(as_text=True))
 
-    assert json_respone["message"] == "Could not find all required fields."
+    assert response.status_code == 400
+    assert json_respone["message"] == "Missing attribute password"
     assert len(get_all_users()) == 0

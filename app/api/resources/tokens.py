@@ -40,9 +40,10 @@ class TokensResource(Resource):
             refresh_token, current_app.config["JWT_IDENTITY_CLAIM"])
 
         result = {
+            "message": "Created access and refresh token",
             "access_token": {
                 "id": access_token_id,
-                "token":access_token
+                "token": access_token
             },
             "refresh_token": {
                 "id": refresh_token_id,
@@ -50,4 +51,4 @@ class TokensResource(Resource):
             }
         }
 
-        return result, 200
+        return result, 201
