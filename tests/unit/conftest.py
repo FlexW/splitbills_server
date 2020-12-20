@@ -1,8 +1,10 @@
 import pytest
 
 from base64 import b64encode
+from flask import current_app
+from flask_jwt_extended import create_access_token, create_refresh_token
+from app.models.token import add_token_to_database
 from app import create_app
-from app.models.user import User, insert_user
 
 
 @pytest.fixture
@@ -49,3 +51,29 @@ def api_headers_bearer():
             "Content-Type": "application/json"
         }
     return _api_headers_bearer
+
+
+@pytest.fixture
+def insert_tokens():
+    def _insert_tokens(identity):
+        access_token = create_access_token(identity=identity)
+        refresh_token = create_refresh_token(identity=identity)
+
+        access_token_id = add_token_to_database(
+            access_token, current_app.config["JWT_IDENTITY_CLAIM"])
+        refresh_token_id = add_token_to_database(
+            refresh_token, current_app.config["JWT_IDENTITY_CLAIM"])
+
+        result = {
+            "access_token": {
+                "id": access_token_id,
+                "token": access_token
+            },
+            "refresh_token": {
+                "id": refresh_token_id,
+                "token": refresh_token
+            }
+        }
+
+        return result
+    return _insert_tokens

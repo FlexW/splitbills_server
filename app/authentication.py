@@ -1,4 +1,4 @@
-from flask import g
+from flask import g, jsonify
 from app import auth, jwt
 from app.models.user import get_user_by_email
 from app.models.token import is_token_revoked

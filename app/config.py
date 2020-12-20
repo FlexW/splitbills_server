@@ -11,6 +11,7 @@ class Config:
 
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refresh"]
+    JWT_ERROR_MESSAGE_KEY = "message"
 
 
 class TestingConfig(Config):

@@ -1,22 +1,30 @@
-from flask import abort, g
+from flask import abort
 from flask_restful import Resource
-from app import auth
-from app.models.user import get_user_by_id
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.models.user import get_user_by_id, get_user_by_email
 from app.api.schemas.user import user_schema
 
 
 def _is_user_allowed_to_access(user_id):
-    if g.current_user.id != user_id:
-        abort({"message": "Forbidden"})
+    authorized_user_email = get_jwt_identity()
+    authorized_user_id = get_user_by_email(authorized_user_email).id
+
+    if authorized_user_id != user_id:
+        abort(401, "Not allowed to view user")
 
 
 class UserResource(Resource):
 
-    @auth.login_required
+    @jwt_required
     def get(self, user_id):
         _is_user_allowed_to_access(user_id)
 
         user = get_user_by_id(user_id)
-        result = user_schema.dump(user)
+        user_dumped = user_schema.dump(user)
 
-        return result
+        result = {
+            "message": "Returned user",
+            "user": user_dumped
+        }
+
+        return result, 200
