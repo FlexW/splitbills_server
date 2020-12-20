@@ -2,10 +2,10 @@ import json
 
 from app.models.user import User, insert_user
 from app.models.group_member import GroupMember
-from app.models.group import Group, get_group_by_id, insert_group
+from app.models.group import Group, get_group_by_id, insert_group, get_all_groups
 
 
-def test_add_group(app, test_client, api_headers_auth):
+def test_add_group(app, test_client, api_headers_bearer, insert_tokens):
     password = "securepassword"
 
     user = User(first_name="Max",
@@ -13,6 +13,7 @@ def test_add_group(app, test_client, api_headers_auth):
                 email="muster@mail.de",
                 password=password)
     user = insert_user(user)
+    tokens = insert_tokens(user.email)
 
     group_data = {
         "name": "Muster",
@@ -24,13 +25,17 @@ def test_add_group(app, test_client, api_headers_auth):
     }
 
     response = test_client.post("/groups",
-                                headers=api_headers_auth(user.email, password),
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
                                 data=json.dumps(group_data))
     json_response = json.loads(response.get_data(as_text=True))
 
-    assert json_response["message"] == "Created new group."
+    assert response.status_code == 201
+
+    assert json_response["message"] == "Created new group"
     assert json_response["group"]["id"] == 1
     assert json_response["group"]["name"] == group_data["name"]
+    assert json_response["group"]["valid"] is True
 
     group = get_group_by_id(json_response["group"]["id"])
 
@@ -38,7 +43,7 @@ def test_add_group(app, test_client, api_headers_auth):
     assert len(group.group_members) == 1
 
 
-def test_get_groups_from_user(app, test_client, api_headers_auth):
+def test_get_groups_from_user(app, test_client, api_headers_bearer, insert_tokens):
     password = "securepassword"
 
     user = User(first_name="Max",
@@ -47,6 +52,7 @@ def test_get_groups_from_user(app, test_client, api_headers_auth):
                 password=password)
 
     user = insert_user(user)
+    tokens = insert_tokens(user.email)
 
     group1_member = GroupMember(user=user)
 
@@ -59,33 +65,39 @@ def test_get_groups_from_user(app, test_client, api_headers_auth):
     insert_group(group2)
 
     response = test_client.get("/groups",
-                               headers=api_headers_auth(user.email, password))
+                               headers=api_headers_bearer(
+                                   tokens["access_token"]["token"]))
     json_respone = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+
+    assert json_respone["message"] == "Returned groups"
 
     assert len(json_respone["groups"]) == 2
     assert json_respone["groups"][0]["name"] == group1.name
     assert json_respone["groups"][1]["name"] == group2.name
 
 
-def test_get_just_groups_from_user(app, test_client, api_headers_auth):
+def test_get_just_groups_from_user(app, test_client, api_headers_bearer, insert_tokens):
     password = "securepassword"
 
     user1 = User(first_name="Max",
-                last_name="Muster",
-                email="muster@mail.de",
-                password=password)
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    user1 = insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
 
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
                  password=password)
-
-    user1 = insert_user(user1)
     user2 = insert_user(user2)
+    user2_tokens = insert_tokens(user2.email)
 
     group1_member1 = GroupMember(user=user1)
     group1 = Group(name="group1",
-                  group_members=[group1_member1])
+                   group_members=[group1_member1])
 
     group2_member1 = GroupMember(user=user1)
     group2_member2 = GroupMember(user=user2)
@@ -101,7 +113,8 @@ def test_get_just_groups_from_user(app, test_client, api_headers_auth):
     group3 = insert_group(group3)
 
     response = test_client.get("/groups",
-                               headers=api_headers_auth(user1.email, password))
+                               headers=api_headers_bearer(
+                                   user1_tokens["access_token"]["token"]))
     json_respone = json.loads(response.get_data(as_text=True))
 
     assert len(json_respone["groups"]) == 2
@@ -109,7 +122,8 @@ def test_get_just_groups_from_user(app, test_client, api_headers_auth):
     assert json_respone["groups"][1]["name"] == group2.name
 
     response = test_client.get("/groups",
-                               headers=api_headers_auth(user2.email, password))
+                               headers=api_headers_bearer(
+                                   user2_tokens["access_token"]["token"]))
     json_respone = json.loads(response.get_data(as_text=True))
 
     assert len(json_respone["groups"]) == 2
@@ -117,13 +131,15 @@ def test_get_just_groups_from_user(app, test_client, api_headers_auth):
     assert json_respone["groups"][1]["name"] == group3.name
 
 
-def test_get_only_non_removed_groups(test_client, api_headers_auth):
+def test_get_only_non_removed_groups(test_client, api_headers_bearer, insert_tokens):
     password = "securepassword"
 
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
                  password=password)
+    insert_user(user1)
+    tokens = insert_tokens(user1.email)
 
     group1 = Group(name="G1", group_members=[GroupMember(user=user1)])
     insert_group(group1)
@@ -132,8 +148,194 @@ def test_get_only_non_removed_groups(test_client, api_headers_auth):
     insert_group(group2)
 
     response = test_client.get("/groups",
-                               headers=api_headers_auth(user1.email, password))
+                               headers=api_headers_bearer(
+                                   tokens["access_token"]["token"]))
     json_respone = json.loads(response.get_data(as_text=True))
 
     assert len(json_respone["groups"]) == 1
     assert json_respone["groups"][0]["id"] == group1.id
+
+
+def test_error_on_name_missing(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    group_data = {
+        "members": [
+            {
+                "id": user.id,
+            }
+        ]
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+    assert json_response["message"] == "Missing attribute name"
+
+    assert len(get_all_groups()) == 0
+
+
+def test_error_on_name_wrong_type(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    group_data = {
+        "name": True,
+        "members": [
+            {
+                "id": user.id,
+            }
+        ]
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+    assert json_response["message"] == "Attribute name needs to be of type str"
+
+    assert len(get_all_groups()) == 0
+
+
+def test_error_on_members_missing(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    group_data = {
+        "name": "Group"
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+    assert json_response["message"] == "Missing attribute members"
+
+    assert len(get_all_groups()) == 0
+
+
+def test_error_on_members_wrong_type(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    group_data = {
+        "name": "Group",
+        "members": True
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+    assert json_response["message"] == "Attribute members needs to be of type list"
+
+    assert len(get_all_groups()) == 0
+
+
+def test_error_on_wrong_member_id(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user.id,
+            },
+            {
+                "id": 2,
+            }
+        ]
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+
+    assert json_response["message"] == "User with id 2 does not exist"
+    assert len(get_all_groups()) == 0
+
+
+def test_error_on_user_not_in_group(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user2.id,
+            }
+        ]
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+
+    assert json_response["message"] == "User who created group must be group member"
+    assert len(get_all_groups()) == 0

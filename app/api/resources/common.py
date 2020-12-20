@@ -1,6 +1,7 @@
 from flask import abort
+from flask_jwt_extended import get_jwt_identity
 from app.models.group import get_group_by_id
-from app.models.user import get_user_by_id
+from app.models.user import get_user_by_id, get_user_by_email
 from app.models.bill import get_bill_by_id
 
 
@@ -61,3 +62,10 @@ def get_attribute(json_data, attribute, ttype=str):
             attribute, typestr))
 
     return result
+
+
+def get_authorized_user():
+    authorized_user_email = get_jwt_identity()
+    authorized_user = get_user_by_email(authorized_user_email)
+
+    return authorized_user

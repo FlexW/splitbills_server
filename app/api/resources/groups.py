@@ -1,43 +1,40 @@
-from flask import abort, request, g
+from flask import abort, request
 from flask_restful import Resource
-from marshmallow import ValidationError
-from app.api.schemas.group import group_schema, groups_schema
+from flask_jwt_extended import jwt_required
 from app.models.group import Group, insert_group, get_valid_groups_by_user_id
 from app.models.user import get_user_by_id
 from app.models.group_member import GroupMember
-from app import auth
-from .common import load_request_data_as_json
+from app.api.resources.common import (
+    load_request_data_as_json, get_authorized_user, get_attribute)
 
 
 def _load_group_data(json_data):
-    try:
-        data = group_schema.load(json_data, partial=("id",
-                                                     "members.password",
-                                                     "members.first_name",
-                                                     "members.last_name",
-                                                     "members.email"))
-    except ValidationError:
-        abort({"message": "Could not find all required fields."})
+    get_attribute(json_data, "name")
+    members = get_attribute(json_data, "members", ttype=list)
 
-    return data
+    for member in members:
+        get_attribute(member, "id", ttype=int)
+
+    return json_data
 
 
 def _validate_group(data):
-    current_user = g.current_user
+    current_user = get_authorized_user()
     is_current_user_in_group = False
 
-    for member in data["members"]:
-        # Check user exists
-        user_id = member["id"]
-        if not get_user_by_id(user_id):
-            abort("User with id {} does not exist.".format(user_id))
+    if "members" in data:
+        for member in data["members"]:
+            # Check user exists
+            user_id = member["id"]
+            if not get_user_by_id(user_id):
+                abort(400, "User with id {} does not exist".format(user_id))
 
-        # Check if user is current user
-        if user_id == current_user.id:
-            is_current_user_in_group = True
+            # Check if user is current user
+            if user_id == current_user.id:
+                is_current_user_in_group = True
 
     if not is_current_user_in_group:
-        abort("User who created group must be group member.")
+        abort(400, "User who created group must be group member")
 
 
 def _create_new_group(data):
@@ -57,7 +54,7 @@ def _create_new_group(data):
 
 class GroupsResource(Resource):
 
-    @auth.login_required
+    @jwt_required
     def post(self):
         json_data = load_request_data_as_json(request)
 
@@ -67,12 +64,22 @@ class GroupsResource(Resource):
 
         group = _create_new_group(data)
 
-        return {"message": "Created new group.", "group": group_schema.dump(group)}
+        result = {
+            "message": "Created new group",
+            "group": group.to_dict()
+        }
 
-    @auth.login_required
+        return result, 201
+
+    @jwt_required
     def get(self):
-        current_user = g.current_user
+        current_user = get_authorized_user()
 
         groups = get_valid_groups_by_user_id(current_user.id)
 
-        return {"groups": groups_schema.dump(groups)}
+        result = {
+            "message": "Returned groups",
+            "groups": [group.to_dict() for group in groups]
+        }
+
+        return result, 200

@@ -12,6 +12,13 @@ class Group(db.Model):
 
     bills = db.relationship("Bill", back_populates="group")
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "valid": self.valid
+        }
+
 
 def insert_group(group):
     db.session.add(group)

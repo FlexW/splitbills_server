@@ -61,3 +61,5 @@
    docker-compose file should fill in necessary environment variables
 
 ** TODO Add a welcome response on root
+
+** TODO Refactor code to move away from marshmallow
