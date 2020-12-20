@@ -16,13 +16,13 @@
 *** DONE Server should check that sum of all amounts of all bill members is zero
 *** DONE User should be able to modify bill data
 *** TODO How to handle bills that get added to groups and not all member of bill are group members?
-*** TODO Don't expose date_created
 *** DONE Allow to delete bills
 *** DONE Store amount as integer in cents
 
 
 ** TODO Work on registration
-*** Implement verification for registration
+*** TODO Implement verification for registration
+    If accounts not confirmed, they should be not able to do anything.
 
 
 ** TODO Work on users
@@ -34,3 +34,30 @@
 
 
 ** DONE Refactor groups/members route to group/{id}/members
+
+** TODO Update to new api scheme and add missing tests
+   New api scheme means that every response should return a
+   human readable message and a status code that indicates the success
+   or failure of the request. Also routes should just be accessible
+   with the jwt token.
+*** DONE Tokens
+*** DONE Token
+*** DONE TokenRefresh
+*** TODO Users
+*** TODO User
+*** TODO Groups
+*** TODO Group
+*** TODO GroupBills
+*** TODO GroupMember
+*** TODO GroupMembers
+*** TODO Bills
+*** TODO Bill
+
+** TODO Implement better error handling
+   Server should throw nice error messages on missing authentication, or
+   invalid routes or invalid content type.
+
+** TODO Update Dockerfile and add a docker-compose file
+   docker-compose file should fill in necessary environment variables
+
+** TODO Add a welcome response on root
