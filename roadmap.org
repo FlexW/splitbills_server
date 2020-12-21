@@ -50,7 +50,7 @@
 *** DONE GroupBills
 *** DONE GroupMember
 *** DONE GroupMembers
-*** TODO Bills
+*** DONE Bills
 *** TODO Bill
 
 ** TODO Implement better error handling
