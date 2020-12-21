@@ -27,7 +27,7 @@ def check_user_exists(user_id):
     user = get_user_by_id(user_id)
 
     if user is None:
-        abort(400, "User does not exist.")
+        abort(400, "User does not exist")
 
     return user
 
