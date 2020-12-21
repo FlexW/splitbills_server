@@ -17,10 +17,10 @@ def _load_bill_data(json_data):
     check_has_not_attribute(json_data, "date_created")
     check_has_not_attribute(json_data, "id")
     check_has_not_attribute(json_data, "valid")
+    check_has_not_attribute(json_data, "group_id")
 
     description = get_attribute_if_existing(json_data, "description")
     date = get_attribute_if_existing(json_data, "date")
-    group_id = get_attribute_if_existing(json_data, "group_id", ttype=int)
     members = get_attribute_if_existing(json_data, "members", ttype=list)
 
     data = {}
@@ -30,9 +30,6 @@ def _load_bill_data(json_data):
 
     if date is not None:
         data["date"] = convert_string_to_datetime(date)
-
-    if group_id is not None:
-        data["group_id"] = group_id
 
     if members is not None:
         data["members"] = []
@@ -50,15 +47,21 @@ def _load_bill_data(json_data):
 
 
 def _check_user_is_allowed_to_modify_bill(user, bill):
+    error_code = 401
+    error_message = "Bill does not exist"
+
     for member in bill.members:
         if member.user == user:
             return
+
+    if bill.group is None:
+        abort(error_code, error_message)
 
     for member in bill.group.group_members:
         if member.user == user:
             return
 
-    abort({"message": "Forbidden"})
+    abort(error_code, error_message)
 
 
 def _update_description(bill, data):

@@ -1,6 +1,8 @@
 import json
 import datetime
 
+from app.models.group import Group, insert_group
+from app.models.group_member import GroupMember
 from app.models.user import User, insert_user
 from app.models.bill import (Bill, insert_bill,
                              get_bill_by_id)
@@ -382,3 +384,159 @@ def test_delete_existing_bill(test_client, api_headers_bearer, insert_tokens):
     assert response.status_code == 200
     assert json_response["message"] == "Deleted bill"
     assert bill1.valid is False
+
+
+def test_error_on_user_is_not_allowed_to_modify_bill(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+    user3_tokens = insert_tokens(user3.email)
+
+    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
+    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+
+    bill1 = Bill(description="Bill",
+                 date=now,
+                 date_created=now,
+                 members=[bill_member1, bill_member2])
+    bill_id = insert_bill(bill1).id
+
+    data = {
+        "description": "New"
+    }
+
+    response = test_client.put("/bills/{}".format(bill_id),
+                               headers=api_headers_bearer(
+                                   user3_tokens["access_token"]["token"]),
+                               data=json.dumps(data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    bill = get_bill_by_id(bill_id)
+
+    assert response.status_code == 401
+    assert json_response["message"] == "Bill does not exist"
+    assert bill.description == "Bill"
+
+
+def test_error_on_user_is_not_allowed_to_modify_bill2(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+    user3_tokens = insert_tokens(user3.email)
+
+    group = Group(name="Group", group_members=[GroupMember(user=user1)])
+    insert_group(group)
+
+    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
+    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+
+    bill1 = Bill(description="Bill",
+                 date=now,
+                 date_created=now,
+                 group=group,
+                 members=[bill_member1, bill_member2])
+    bill_id = insert_bill(bill1).id
+
+    data = {
+        "description": "New"
+    }
+
+    response = test_client.put("/bills/{}".format(bill_id),
+                               headers=api_headers_bearer(
+                                   user3_tokens["access_token"]["token"]),
+                               data=json.dumps(data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    bill = get_bill_by_id(bill_id)
+
+    assert response.status_code == 401
+    assert json_response["message"] == "Bill does not exist"
+    assert bill.description == "Bill"
+
+
+def test_group_member_is_allowed_to_modify_bill(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+    user3_tokens = insert_tokens(user3.email)
+
+    group = Group(name="Group", group_members=[GroupMember(user=user1),
+                                               GroupMember(user=user3)])
+    insert_group(group)
+
+    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
+    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+
+    bill1 = Bill(description="Bill",
+                 date=now,
+                 date_created=now,
+                 group=group,
+                 members=[bill_member1, bill_member2])
+    bill_id = insert_bill(bill1).id
+
+    data = {
+        "description": "New"
+    }
+
+    response = test_client.put("/bills/{}".format(bill_id),
+                               headers=api_headers_bearer(
+                                   user3_tokens["access_token"]["token"]),
+                               data=json.dumps(data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    bill = get_bill_by_id(bill_id)
+
+    assert response.status_code == 200
+    assert json_response["message"] == "Updated bill"
+    assert bill.description == data["description"]
