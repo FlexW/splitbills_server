@@ -2,7 +2,6 @@ from flask import request, abort
 from flask_restful import Resource
 from app.models.user import User, insert_user, get_user_by_email
 from app.api.resources.common import load_request_data_as_json, get_attribute
-from app.api.schemas.user import user_schema
 
 
 def _load_user_data_for_registration(json_data):
@@ -50,6 +49,9 @@ class UsersResource(Resource):
 
         user = _create_new_user(data)
 
-        result = user_schema.dump(User.query.get(user.id))
+        result = {
+            "message": "Created new user",
+            "user": user.to_dict()
+        }
 
-        return {"message": "Created new user", "user": result}, 201
+        return result, 201

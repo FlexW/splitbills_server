@@ -1,8 +1,7 @@
 from flask import abort
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models.user import get_user_by_id, get_user_by_email
-from app.api.schemas.user import user_schema
+from flask_jwt_extended import jwt_required
+from app.models.user import get_user_by_id
 from app.api.resources.common import get_authorized_user
 
 
@@ -20,11 +19,10 @@ class UserResource(Resource):
         _is_user_allowed_to_access(user_id)
 
         user = get_user_by_id(user_id)
-        user_dumped = user_schema.dump(user)
 
         result = {
             "message": "Returned user",
-            "user": user_dumped
+            "user": user.to_dict()
         }
 
         return result, 200

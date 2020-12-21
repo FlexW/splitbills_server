@@ -44,6 +44,7 @@ def test_get_bills_from_group(test_client, api_headers_bearer, insert_tokens):
     json_response = json.loads(response.get_data(as_text=True))
 
     assert response.status_code == 200
+    assert json_response["message"] == "Returned bills"
     assert len(json_response["bills"]) == 1
     assert json_response["bills"][0]["id"] == bill.id
 
