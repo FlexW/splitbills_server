@@ -10,9 +10,12 @@ from .resources.bill import BillResource
 from .resources.tokens import TokensResource
 from .resources.token import TokenResource
 from .resources.tokens_refresh import TokensRefreshResource
+from .resources.welcome import WelcomeResource
 
 
 def init_routes(api):
+    api.add_resource(WelcomeResource, "/")
+
     api.add_resource(TokensResource, "/tokens")
     api.add_resource(TokenResource, "/tokens/<int:token_id>")
     api.add_resource(TokensRefreshResource, "/tokens/refresh")
