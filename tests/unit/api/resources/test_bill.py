@@ -540,3 +540,89 @@ def test_group_member_is_allowed_to_modify_bill(test_client, api_headers_bearer,
     assert response.status_code == 200
     assert json_response["message"] == "Updated bill"
     assert bill.description == data["description"]
+
+
+def test_error_on_bill_not_existing(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
+    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+
+    bill1 = Bill(description="Bill",
+                 date=now,
+                 date_created=now,
+                 members=[bill_member1, bill_member2])
+    bill_id = insert_bill(bill1).id
+
+    data = {
+        "description": "New"
+    }
+
+    response = test_client.put("/bills/2",
+                               headers=api_headers_bearer(
+                                   user1_tokens["access_token"]["token"]),
+                               data=json.dumps(data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    bill = get_bill_by_id(bill_id)
+
+    assert response.status_code == 400
+    assert json_response["message"] == "Bill does not exist"
+    assert bill.description == "Bill"
+
+
+def test_error_on_datetime_invalid_format(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
+    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+
+    bill1 = Bill(description="Bill",
+                 date=now,
+                 date_created=now,
+                 members=[bill_member1, bill_member2])
+    bill_id = insert_bill(bill1).id
+
+    data = {
+        "date": "a"
+    }
+
+    response = test_client.put("/bills/{}".format(bill_id),
+                               headers=api_headers_bearer(
+                                   user1_tokens["access_token"]["token"]),
+                               data=json.dumps(data, default=json_data_encoder))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    bill = get_bill_by_id(bill_id)
+
+    assert response.status_code == 400
+    assert json_response["message"] == "Cannot convert a to datetime"
+    assert bill.date == now

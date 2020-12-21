@@ -196,3 +196,16 @@ def test_error_on_password_wrong_type(app, test_client, api_headers):
     assert response.status_code == 400
     assert json_respone["message"] == "Attribute password needs to be of type str"
     assert len(get_all_users()) == 0
+
+
+def test_error_on_empty_request(test_client, api_headers):
+    user_data = {}
+
+    response = test_client.post("/users",
+                                headers=api_headers,
+                                data=json.dumps(user_data))
+    json_respone = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+    assert json_respone["message"] == "No input data provided"
+    assert len(get_all_users()) == 0

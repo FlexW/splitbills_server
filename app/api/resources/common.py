@@ -11,7 +11,7 @@ def check_bill_exists(bill_id):
     bill = get_bill_by_id(bill_id)
 
     if bill is None:
-        abort(400, {"message": "Bill does not exist."})
+        abort(400, "Bill does not exist")
 
     return bill
 
@@ -20,7 +20,7 @@ def load_request_data_as_json(request):
     json_data = request.get_json()
 
     if not json_data:
-        abort(400, {"message": "No input data provided."})
+        abort(400, "No input data provided")
 
     return json_data
 
