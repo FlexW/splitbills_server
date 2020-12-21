@@ -48,7 +48,7 @@
 *** DONE Groups
 *** DONE Group
 *** DONE GroupBills
-*** TODO GroupMember
+*** DONE GroupMember
 *** TODO GroupMembers
 *** TODO Bills
 *** TODO Bill
