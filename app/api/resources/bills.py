@@ -1,8 +1,6 @@
-from flask import abort, request, g
+from flask import abort, request
 from flask_restful import Resource
-from marshmallow import ValidationError
-from app import auth
-from app.api.schemas.bill import bill_schema, bills_schema
+from flask_jwt_extended import jwt_required
 from app.models.group import get_group_by_id
 from app.models.bill_member import BillMember
 from app.models.bill import Bill, insert_bill, get_valid_bills_by_user_id
@@ -10,17 +8,45 @@ from app.models.user import get_user_by_id
 from .common import (load_request_data_as_json,
                      check_user_exists,
                      check_group_exists,
-                     check_user_is_member_of_group)
+                     check_user_is_member_of_group,
+                     get_authorized_user,
+                     get_attribute,
+                     check_has_not_attribute,
+                     get_attribute_if_existing,
+                     convert_string_to_datetime)
 
 
 def _load_bill_data(json_data):
-    try:
-        data = bill_schema.load(json_data, partial=("id",
-                                                    "date",
-                                                    "date_required",
-                                                    "members.bill_id"))
-    except ValidationError:
-        abort({"message": "Could not find all required fields."})
+    check_has_not_attribute(json_data, "id")
+    check_has_not_attribute(json_data, "valid")
+
+    description = get_attribute(json_data, "description")
+    date = get_attribute_if_existing(json_data, "date")
+    date_created = get_attribute_if_existing(json_data, "date_created")
+    group_id = get_attribute_if_existing(json_data, "group_id", ttype=int)
+    members = get_attribute(json_data, "members", ttype=list)
+
+    data = {}
+    data["description"] = description
+    if date is not None:
+        data["date"] = convert_string_to_datetime(date)
+
+    if date_created is not None:
+        data["date_created"] = convert_string_to_datetime(date_created)
+
+    if group_id is not None:
+        data["group_id"] = group_id
+
+    data["members"] = []
+
+    for member in members:
+        member_id = get_attribute(member, "user_id", ttype=int)
+        amount = get_attribute(member, "amount", ttype=int)
+
+        data["members"].append({
+            "user_id": member_id,
+            "amount": amount
+        })
 
     return data
 
@@ -37,15 +63,17 @@ def _validate_bill(data):
 
         if amount > 0:
             if user.id in creditor_ids_in_group:
-                abort({"message": "User can only be one time a creditor."})
+                abort(400,
+                      "User {} can only be one time a creditor".format(user.id))
             creditor_ids_in_group.append(user.id)
         else:
             if user.id in debtor_ids_in_group:
-                abort({"message": "User can only be one time a debtor."})
+                abort(400,
+                      "User {} can only be one time a debtor".format(user.id))
             debtor_ids_in_group.append(user.id)
 
     if amounts_sum != 0:
-        abort({"message": "Sum of amounts must be zero."})
+        abort(400, "Sum of amounts must be zero")
 
     if "group_id" in data:
         group = check_group_exists(data["group_id"])
@@ -76,7 +104,7 @@ def _create_new_bill(data):
 
 class BillsResource(Resource):
 
-    @auth.login_required
+    @jwt_required
     def post(self):
         json_data = load_request_data_as_json(request)
 
@@ -84,14 +112,20 @@ class BillsResource(Resource):
 
         _validate_bill(data)
 
-        _create_new_bill(data)
+        bill = _create_new_bill(data)
 
-        return {"message": "Created new bill."}
+        return {
+            "message": "Created new bill",
+            "bill": bill.to_dict()
+        }, 201
 
-    @auth.login_required
+    @jwt_required
     def get(self):
-        current_user = g.current_user
+        current_user = get_authorized_user()
 
         bills = get_valid_bills_by_user_id(current_user.id)
 
-        return {"bills": bills_schema.dump(bills)}
+        return {
+            "message": "Returned bills",
+            "bills": [bill.to_dict() for bill in bills]
+        }, 200

@@ -2,8 +2,9 @@ import datetime
 
 from sqlalchemy import and_
 from app import db
-from .bill_member import BillMember
-from .group import Group
+from app.util.converter import string_to_datetime, datetime_to_string
+from app.models.bill_member import BillMember
+from app.models.group import Group
 
 
 class Bill(db.Model):
@@ -21,6 +22,39 @@ class Bill(db.Model):
     members = db.relationship("BillMember",
                               back_populates="bill",
                               cascade="all, delete, delete-orphan")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "description": self.description,
+            "date": datetime_to_string(self.date),
+            "date_created": datetime_to_string(self.date_created)
+        }
+
+    # def from_dict(data):
+    #     description = data["description"]
+
+    #     id = None
+    #     if "id" in data:
+    #         id = data["id"]
+
+    #     date = None
+    #     if "date" in data:
+    #         date = string_to_datetime(data["date"])
+
+    #     date_created = None
+    #     if "date_created" in data:
+    #         date_created = string_to_datetime(data["date_created"])
+
+    #     valid = True
+    #     if "valid" in data:
+    #         valid = data["valid"]
+
+    #     return Bill(id=id,
+    #                 description=description,
+    #                 date=date,
+    #                 date_created=date_created,
+    #                 valid=valid)
 
 
 def insert_bill(bill):
