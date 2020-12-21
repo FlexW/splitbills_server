@@ -52,7 +52,7 @@
 *** DONE GroupMember
 *** DONE GroupMembers
 *** DONE Bills
-*** TODO Bill
+*** DONE Bill
 
 ** TODO Implement better error handling
    Server should throw nice error messages on missing authentication, or
