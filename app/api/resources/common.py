@@ -37,14 +37,14 @@ def check_user_is_member_of_group(user, group):
         if member.user_id == user.id:
             return
 
-    abort({"message": "Forbidden"})
+    abort(401, "Group does not exist")
 
 
 def check_group_exists(group_id):
     group = get_group_by_id(group_id)
 
     if group is None:
-        abort({"message": "Group does not exist."})
+        abort(401, "Group does not exist")
 
     return group
 
