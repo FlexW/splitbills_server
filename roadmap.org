@@ -6,6 +6,7 @@
 *** DONE User should be able to delete group members
 *** DONE User should be able to modify group data
 *** DONE Allow deletion of groups
+*** TODO Create route that returns group by id
 
 
 ** TODO Work on bills

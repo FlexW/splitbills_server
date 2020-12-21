@@ -1,25 +1,50 @@
 import decimal
 
-from flask import abort, request, g
+from flask import abort, request
 from flask_restful import Resource
-from marshmallow import ValidationError
-from app import auth
+from flask_jwt_extended import jwt_required
 from app.models.bill_member import BillMember
-from app.api.schemas.bill import bill_schema
-from app.api.resources.common import load_request_data_as_json, check_bill_exists
+from app.api.resources.common import (load_request_data_as_json,
+                                      check_bill_exists,
+                                      get_authorized_user,
+                                      get_attribute,
+                                      get_attribute_if_existing,
+                                      check_has_not_attribute,
+                                      convert_string_to_datetime)
 
 
 def _load_bill_data(json_data):
-    try:
-        data = bill_schema.load(json_data, partial=("id",
-                                                    "description",
-                                                    "date",
-                                                    "date_created",
-                                                    "group_id",
-                                                    "members",
-                                                    "members.bill_id"))
-    except ValidationError:
-        abort({"message": "Could not find all required fields."})
+    check_has_not_attribute(json_data, "date_created")
+    check_has_not_attribute(json_data, "id")
+    check_has_not_attribute(json_data, "valid")
+
+    description = get_attribute_if_existing(json_data, "description")
+    date = get_attribute_if_existing(json_data, "date")
+    group_id = get_attribute_if_existing(json_data, "group_id", ttype=int)
+    members = get_attribute_if_existing(json_data, "members", ttype=list)
+
+    data = {}
+
+    if description is not None:
+        data["description"] = description
+
+    if date is not None:
+        data["date"] = convert_string_to_datetime(date)
+
+    if group_id is not None:
+        data["group_id"] = group_id
+
+    if members is not None:
+        data["members"] = []
+
+        for member in members:
+            member_id = get_attribute(member, "user_id", ttype=int)
+            amount = get_attribute(member, "amount", ttype=int)
+
+            data["members"].append({
+                "user_id": member_id,
+                "amount": amount
+            })
 
     return data
 
@@ -91,8 +116,6 @@ def _update_bill_members(bill, data):
                                      amount=member["amount"])
             bill.members.append(bill_member)
 
-        # TODO: Delete members from bill
-
 
 def _update_bill_data(bill, data):
     _update_description(bill, data)
@@ -106,7 +129,7 @@ def _validate_bill_members_data(data):
         amount_sum += members["amount"]
 
     if amount_sum != decimal.Decimal(0):
-        abort({"message": "Sum of amounts must be zero."})
+        abort(400, "Sum of amounts must be zero")
 
 
 def _validate_bill_data(data):
@@ -121,7 +144,7 @@ def _delete_bill(bill):
 
 class BillResource(Resource):
 
-    @auth.login_required
+    @jwt_required
     def put(self, bill_id):
         json_data = load_request_data_as_json(request)
 
@@ -131,18 +154,18 @@ class BillResource(Resource):
 
         _validate_bill_data(data)
 
-        _check_user_is_allowed_to_modify_bill(g.current_user, bill)
+        _check_user_is_allowed_to_modify_bill(get_authorized_user(), bill)
 
         _update_bill_data(bill, data)
 
-        return {"message": "Changed bill."}
+        return {"message": "Updated bill"}, 200
 
-    @auth.login_required
+    @jwt_required
     def delete(self, bill_id):
         bill = check_bill_exists(bill_id)
 
-        _check_user_is_allowed_to_modify_bill(g.current_user, bill)
+        _check_user_is_allowed_to_modify_bill(get_authorized_user(), bill)
 
         _delete_bill(bill)
 
-        return {"message": "Deleted bill."}
+        return {"message": "Deleted bill"}, 200

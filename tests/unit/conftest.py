@@ -1,6 +1,5 @@
 import pytest
 
-from base64 import b64encode
 from flask import current_app
 from flask_jwt_extended import create_access_token, create_refresh_token
 from app.models.token import add_token_to_database
@@ -28,18 +27,6 @@ def api_headers():
         "Accept": "application/json",
         "Content-Type": "application/json"
     }
-
-
-@pytest.fixture
-def api_headers_auth():
-    def _api_headers_auth(user, password):
-        return {
-            "Authorization": "Basic " + b64encode(
-                (user + ":" + password).encode("utf-8")).decode("utf-8"),
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        }
-    return _api_headers_auth
 
 
 @pytest.fixture
