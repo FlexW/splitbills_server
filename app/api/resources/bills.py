@@ -5,15 +5,16 @@ from app.models.group import get_group_by_id
 from app.models.bill_member import BillMember
 from app.models.bill import Bill, insert_bill, get_valid_bills_by_user_id
 from app.models.user import get_user_by_id
-from .common import (load_request_data_as_json,
-                     check_user_exists,
-                     check_group_exists,
-                     check_user_is_member_of_group,
-                     get_authorized_user,
-                     get_attribute,
-                     check_has_not_attribute,
-                     get_attribute_if_existing,
-                     convert_string_to_datetime)
+from app.api.resources.common import (load_request_data_as_json,
+                                      check_user_exists,
+                                      check_group_exists,
+                                      check_user_is_member_of_group,
+                                      get_authorized_user,
+                                      get_attribute,
+                                      check_has_not_attribute,
+                                      get_attribute_if_existing,
+                                      convert_string_to_datetime,
+                                      update_friends)
 
 
 def _load_bill_data(json_data):
@@ -113,6 +114,9 @@ class BillsResource(Resource):
         _validate_bill(data)
 
         bill = _create_new_bill(data)
+
+        user_id_list = [member["user_id"] for member in data["members"]]
+        update_friends(user_id_list)
 
         return {
             "message": "Created new bill",

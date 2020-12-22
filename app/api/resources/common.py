@@ -2,6 +2,7 @@ from dateutil.parser import ParserError
 from flask import abort
 from flask_jwt_extended import get_jwt_identity
 from app.util.converter import string_to_datetime
+from app.models.friend import Friend, is_friend_with_user
 from app.models.group import get_group_by_id
 from app.models.user import get_user_by_id, get_user_by_email
 from app.models.bill import get_bill_by_id
@@ -100,3 +101,13 @@ def get_authorized_user():
     authorized_user = get_user_by_email(authorized_user_email)
 
     return authorized_user
+
+
+def update_friends(user_id_list):
+    for user_id in user_id_list:
+        user = get_user_by_id(user_id)
+        for friend_id in user_id_list:
+            if user.id == friend_id:
+                continue
+            if not is_friend_with_user(user.id, friend_id):
+                user.friends.append(Friend(friend=get_user_by_id(friend_id)))

@@ -380,10 +380,12 @@ def test_insert_friends_of_user_after_adding_group(test_client, api_headers_bear
         ]
     }
 
-    test_client.post("/groups",
-                     headers=api_headers_bearer(
-                         user1_tokens["access_token"]["token"]),
-                     data=json.dumps(group_data))
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+
+    assert response.status_code == 201
 
     # Get friends of user1
     friends_user1 = get_friends_by_user_id(user1.id)

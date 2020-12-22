@@ -3,6 +3,7 @@ import datetime
 
 from app.util.converter import datetime_to_string, string_to_datetime
 from app.models.group_member import GroupMember
+from app.models.friend import get_friends_by_user_id
 from app.models.group import Group, insert_group
 from app.models.user import User, insert_user
 from app.models.bill import (Bill,
@@ -498,3 +499,132 @@ def test_error_on_member_is_more_than_one_time_debtor(test_client, api_headers_b
     assert response.status_code == 400
     assert json_response["message"] == "User {} can only be one time a debtor".format(user2.id)
     assert len(get_all_bills()) == 0
+
+
+def test_insert_friends_of_user_after_adding_bill(test_client, api_headers_bearer, insert_tokens):
+    now = datetime.datetime.utcnow()
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+
+    bill_data = {
+        "description": "Important bill",
+        "date": datetime_to_string(now),
+        "date_created": datetime_to_string(now),
+        "members": [
+            {
+                "user_id": user1.id,
+                "amount": 200
+            },
+            {
+                "user_id": user2.id,
+                "amount": -100
+            },
+            {
+                "user_id": user3.id,
+                "amount": -100
+            }
+        ]
+    }
+
+    response = test_client.post("/bills",
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(bill_data))
+
+    assert response.status_code == 201
+
+    # Get friends of user1
+    friends_user1 = get_friends_by_user_id(user1.id)
+    assert len(friends_user1) == 2
+    assert friends_user1[0].friend_id == user2.id
+    assert friends_user1[1].friend_id == user3.id
+
+    # Get friends of user2
+    friends_user2 = get_friends_by_user_id(user2.id)
+    assert len(friends_user2) == 2
+    assert friends_user2[0].friend_id == user1.id
+    assert friends_user2[1].friend_id == user3.id
+
+    # Get friends of user3
+    friends_user3 = get_friends_by_user_id(user3.id)
+    assert len(friends_user3) == 2
+    assert friends_user3[0].friend_id == user1.id
+    assert friends_user3[1].friend_id == user2.id
+
+
+def test_can_create_multiple_times_bill_with_same_members(test_client, api_headers_bearer, insert_tokens):
+    now = datetime.datetime.utcnow()
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+
+    bill_data = {
+        "description": "Important bill",
+        "date": datetime_to_string(now),
+        "date_created": datetime_to_string(now),
+        "members": [
+            {
+                "user_id": user1.id,
+                "amount": 200
+            },
+            {
+                "user_id": user2.id,
+                "amount": -100
+            },
+            {
+                "user_id": user3.id,
+                "amount": -100
+            }
+        ]
+    }
+
+    # Create bill first time
+    response = test_client.post("/bills",
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(bill_data))
+
+    assert response.status_code == 201
+
+    # Create bill second time
+    response = test_client.post("/bills",
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(bill_data))
+
+    assert response.status_code == 201

@@ -5,8 +5,10 @@ from app.models.group import Group, insert_group, get_valid_groups_by_user_id
 from app.models.user import get_user_by_id
 from app.models.friend import Friend, is_friend_with_user
 from app.models.group_member import GroupMember
-from app.api.resources.common import (
-    load_request_data_as_json, get_authorized_user, get_attribute)
+from app.api.resources.common import (load_request_data_as_json,
+                                      get_authorized_user,
+                                      get_attribute,
+                                      update_friends)
 
 
 def _load_group_data(json_data):
@@ -53,16 +55,6 @@ def _create_new_group(data):
     return group
 
 
-def _update_friends(data):
-    for member in data["members"]:
-        user = get_user_by_id(member["id"])
-        for member in data["members"]:
-            if user.id == member["id"]:
-                continue
-            if not is_friend_with_user(user.id, member["id"]):
-                user.friends.append(Friend(friend=get_user_by_id(member["id"])))
-
-
 class GroupsResource(Resource):
 
     @jwt_required
@@ -75,7 +67,8 @@ class GroupsResource(Resource):
 
         group = _create_new_group(data)
 
-        _update_friends(data)
+        user_id_list = [member["id"] for member in data["members"]]
+        update_friends(user_id_list)
 
         result = {
             "message": "Created new group",
