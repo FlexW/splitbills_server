@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from app.models.user import get_user_by_email, get_all_users
+from app.models.user import User, get_user_by_email, get_all_users, insert_user
 
 
 def test_add_non_existing_user(app, test_client, api_headers):
@@ -26,7 +26,9 @@ def test_add_non_existing_user(app, test_client, api_headers):
         json_respone["user"]["password"]
 
     assert response.status_code == 201
-    assert get_user_by_email(user_data["email"]) is not None
+    user = get_user_by_email(user_data["email"])
+    assert user is not None
+    assert user.registered is True
 
 
 def test_dont_add_existing_user(app, test_client, api_headers):
@@ -209,3 +211,30 @@ def test_error_on_empty_request(test_client, api_headers):
     assert response.status_code == 400
     assert json_respone["message"] == "No input data provided"
     assert len(get_all_users()) == 0
+
+
+def test_create_user_if_not_registered(test_client, api_headers):
+    email = "muster@mail.de"
+    password = "securepassword"
+
+    user = User(email=email)
+    insert_user(user)
+
+    user_data = {
+        "first_name": "Max",
+        "last_name": "Muster",
+        "email": email,
+        "password": password
+    }
+
+    response = test_client.post("/users",
+                                headers=api_headers,
+                                data=json.dumps(user_data))
+
+    assert response.status_code == 201
+    user = get_user_by_email(email)
+    assert user is not None
+    assert user.registered is True
+    assert user.first_name == "Max"
+    assert user.last_name == "Muster"
+    assert user.password_hash is not None

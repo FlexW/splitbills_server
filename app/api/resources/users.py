@@ -23,18 +23,27 @@ def _load_user_data_for_registration(json_data):
 def _check_user_does_not_exist(data):
     user = get_user_by_email(email=data["email"])
 
-    if user is not None:
+    if user is not None and user.registered is True:
         abort(400, "User already exists")
 
 
 def _create_new_user(data):
 
-    user = User(first_name=data["first_name"],
-                last_name=data["last_name"],
-                email=data["email"],
-                password=data["password"])
+    user = get_user_by_email(email=data["email"])
 
-    insert_user(user)
+    if user is None:
+        user = User(first_name=data["first_name"],
+                    last_name=data["last_name"],
+                    email=data["email"],
+                    password=data["password"],
+                    registered=True)
+        insert_user(user)
+        return user
+
+    user.first_name = data["first_name"]
+    user.last_name = data["last_name"]
+    user.password = data["password"]
+    user.registered = True
 
     return user
 

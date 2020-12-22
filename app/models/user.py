@@ -7,10 +7,11 @@ from app.models.group_member import GroupMember
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64), nullable=False)
-    last_name = db.Column(db.String(64), nullable=False)
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
     email = db.Column(db.String(64), nullable=False, unique=True)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128))
+    registered = db.Column(db.Boolean, nullable=False, default=False)
 
     group_memberships = db.relationship("GroupMember", back_populates="user")
 
