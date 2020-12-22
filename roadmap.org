@@ -26,11 +26,11 @@
 ** TODO Work on users
 *** TODO User should be able to modify password
 *** TODO User should be able to modify email
-*** TODO Insert users on bill and group creation if user not created yet
+*** DONE Insert users on bill and group creation if user not created yet
 **** DONE Add registered flag to User
 **** DONE Make password optional
 **** DONE Make sure password gets set on registration
-**** TODO Check on user registration if user already created with registered == False
+**** DONE Check on user registration if user already created with registered == False
 
 
 ** TODO Implement friend mechanism
