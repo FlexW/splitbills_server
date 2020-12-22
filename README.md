@@ -47,6 +47,9 @@ Run all tests with
 ```
 ./scripts/run_tests
 ```
+This will also generate the coverage.
+
+To just run unit tests without coverage, you can execute `pytest` in the root of the project.
 
 ## Run
 Tell flask which app it shoud run
