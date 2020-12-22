@@ -2,12 +2,12 @@ from flask import abort, request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from app.models.group import Group, insert_group, get_valid_groups_by_user_id
-from app.models.user import get_user_by_id
-from app.models.friend import Friend, is_friend_with_user
+from app.models.user import User, get_user_by_id, get_user_by_email, insert_user
 from app.models.group_member import GroupMember
 from app.api.resources.common import (load_request_data_as_json,
                                       get_authorized_user,
                                       get_attribute,
+                                      get_attribute_if_existing,
                                       update_friends)
 
 
@@ -16,9 +16,34 @@ def _load_group_data(json_data):
     members = get_attribute(json_data, "members", ttype=list)
 
     for member in members:
-        get_attribute(member, "id", ttype=int)
+        id = get_attribute_if_existing(member, "id", ttype=int)
+        email = get_attribute_if_existing(member, "email", ttype=str)
+
+        if id is None and email is None:
+            abort(400, "Attribute id or email needs to be set")
 
     return json_data
+
+
+def _get_user_from_member_data(member_data):
+    if "email" in member_data:
+        email = member_data["email"]
+        user = get_user_by_email(email)
+
+        if not user:
+            # Create user
+            user = insert_user(User(email=email))
+            return user
+
+        return user
+
+    id = member_data["id"]
+    user = get_user_by_id(id)
+
+    if not user:
+        abort(400, "User with id {} does not exist".format(id))
+
+    return user
 
 
 def _validate_group(data):
@@ -27,13 +52,10 @@ def _validate_group(data):
 
     if "members" in data:
         for member in data["members"]:
-            # Check user exists
-            user_id = member["id"]
-            if not get_user_by_id(user_id):
-                abort(400, "User with id {} does not exist".format(user_id))
+            user = _get_user_from_member_data(member)
 
             # Check if user is current user
-            if user_id == current_user.id:
+            if user.id == current_user.id:
                 is_current_user_in_group = True
 
     if not is_current_user_in_group:
@@ -44,7 +66,7 @@ def _create_new_group(data):
     group = Group(name=data["name"])
 
     for member in data["members"]:
-        user = get_user_by_id(member["id"])
+        user = _get_user_from_member_data(member)
 
         group_member = GroupMember(user=user, group=group)
 
@@ -67,7 +89,7 @@ class GroupsResource(Resource):
 
         group = _create_new_group(data)
 
-        user_id_list = [member["id"] for member in data["members"]]
+        user_id_list = [_get_user_from_member_data(member).id for member in data["members"]]
         update_friends(user_id_list)
 
         result = {

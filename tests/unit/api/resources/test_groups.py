@@ -459,3 +459,76 @@ def test_can_create_multiple_times_group_with_same_members(test_client, api_head
                                 data=json.dumps(group_data))
 
     assert response.status_code == 201
+
+
+def test_create_group_with_not_registered_group_member(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user.id,
+            },
+            {
+                "email": "newuser@mail.de"
+            }
+        ]
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 201
+
+    assert json_response["message"] == "Created new group"
+    assert json_response["group"]["id"] == 1
+    assert json_response["group"]["name"] == group_data["name"]
+    assert json_response["group"]["valid"] is True
+
+    group = get_group_by_id(json_response["group"]["id"])
+
+    assert group is not None
+    assert len(group.group_members) == 2
+
+
+def test_error_on_group_member_id_or_email_not_set(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user.id,
+            },
+            {
+            }
+        ]
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 400
+    assert json_response["message"] == "Attribute id or email needs to be set"
+    assert len(get_all_groups()) == 0
