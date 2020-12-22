@@ -73,6 +73,13 @@ which runs all the previous commands automatically.
 
 ## Api Description
 
+To get a rough overview, below are the routes listed that the server
+can handle. To learn how to use these routes have a look at the unit
+tests
+[here](https://github.com/FlexW/splitbills_server/tree/dev/tests/unit/api/resources).
+Every route has it's own test file. For example, the test for the
+`/groups` route are in `test_groups.py`.
+
 ### Groups
 
 | Resource                         | URI                                  | Method |
