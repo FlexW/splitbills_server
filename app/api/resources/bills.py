@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from app.models.group import get_group_by_id
 from app.models.bill_member import BillMember
 from app.models.bill import Bill, insert_bill, get_valid_bills_by_user_id
-from app.models.user import get_user_by_id
+from app.models.user import User, get_user_by_id, insert_user
 from app.api.resources.common import (load_request_data_as_json,
                                       check_user_exists,
                                       check_group_exists,
@@ -41,7 +41,13 @@ def _load_bill_data(json_data):
     data["members"] = []
 
     for member in members:
-        member_id = get_attribute(member, "user_id", ttype=int)
+        member_id = get_attribute_if_existing(member, "user_id", ttype=int)
+        if member_id is None:
+            member_email = get_attribute(member, "email", ttype=str)
+            user = User(email=member_email)
+            insert_user(user)
+            member_id = user.id
+
         amount = get_attribute(member, "amount", ttype=int)
 
         data["members"].append({
