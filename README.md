@@ -87,19 +87,25 @@ which runs all the previous commands automatically.
 
 ### Bills
 
-| Resource                         | URI                                  | Method |
-|:---------------------------------|:-------------------------------------|:-------|
-| Create new bill                  | /bills                               | POST   |
-| Delete bill                      | /bills/{bill_id}                     | DELETE |
-| Change bill detail               | /bills/{bill_id}                     | PUT    |
-| Get list of all bills from user  | /bills                               | GET    |
+| Resource                        | URI              | Method |
+|:--------------------------------|:-----------------|:-------|
+| Create new bill                 | /bills           | POST   |
+| Delete bill                     | /bills/{bill_id} | DELETE |
+| Change bill detail              | /bills/{bill_id} | PUT    |
+| Get list of all bills from user | /bills           | GET    |
 
 ### Users
 
-| Resource                         | URI                                  | Method |
-|:---------------------------------|:-------------------------------------|:-------|
-| Create new user                  | /users                               | POST   |
-| Get user detail                  | /users/{user_id}                          | GET    |
+| Resource        | URI              | Method |
+|:----------------|:-----------------|:-------|
+| Create new user | /users           | POST   |
+| Get user detail | /users/{user_id} | GET    |
+
+### Friends
+
+| Resource        | URI      | Method |
+|:----------------|:---------|:-------|
+| Get all friends | /friends | GET    |
 
 
 ### Authentication
