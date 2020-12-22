@@ -1,6 +1,6 @@
 FROM python:3.9.0-slim
 
-COPY requirements_lock.txt /
+COPY requirements.txt /
 RUN apt update && apt install -y git
 RUN pip3 install -r requirements.txt
 
