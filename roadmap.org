@@ -11,7 +11,7 @@
 
 ** TODO Implement better error handling
    Server should throw nice error messages on missing authentication, or
-   invalid routes or invalid content type.
+   invalid routes, unexpected errors, or invalid content type.
 
 
 ** TODO Update Dockerfile and add a docker-compose file
