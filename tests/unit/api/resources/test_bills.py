@@ -684,3 +684,62 @@ def test_create_bill_with_not_registered_bill_member(test_client, api_headers_be
     assert len(get_bills_by_user_id(user2.id)) == 1
 
     assert len(bill.members) == 3
+
+
+def test_create_bill_with_not_registered_bill_member_that_was_already_created(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    new_user_email = "newuser@mail.de"
+    insert_user(User(email=new_user_email))
+
+    bill_data = {
+        "description": "Important bill",
+        "date": datetime_to_string(now),
+        "date_created": datetime_to_string(now),
+        "members": [
+            {
+                "user_id": user1.id,
+                "amount": 200
+            },
+            {
+                "user_id": user2.id,
+                "amount": -100
+            },
+            {
+                "email": new_user_email,
+                "amount": -100
+            }
+        ]
+    }
+
+    response = test_client.post("/bills",
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(bill_data,
+                                                default=json_data_encoder))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 201
+
+    bill = get_bills_by_user_id(user1.id)[0]
+
+    assert json_response["message"] == "Created new bill"
+
+    assert len(get_bills_by_user_id(user1.id)) == 1
+    assert len(get_bills_by_user_id(user2.id)) == 1
+
+    assert len(bill.members) == 3

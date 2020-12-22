@@ -532,3 +532,47 @@ def test_error_on_group_member_id_or_email_not_set(test_client, api_headers_bear
     assert response.status_code == 400
     assert json_response["message"] == "Attribute id or email needs to be set"
     assert len(get_all_groups()) == 0
+
+
+def test_create_group_with_not_registered_group_member_that_was_already_created(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password=password)
+    user = insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    new_user_email = "newuser@mail.de"
+    insert_user(User(email=new_user_email))
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user.id,
+            },
+            {
+                "email": new_user_email
+            }
+        ]
+    }
+
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 201
+
+    assert json_response["message"] == "Created new group"
+    assert json_response["group"]["id"] == 1
+    assert json_response["group"]["name"] == group_data["name"]
+    assert json_response["group"]["valid"] is True
+
+    group = get_group_by_id(json_response["group"]["id"])
+
+    assert group is not None
+    assert len(group.group_members) == 2

@@ -1,7 +1,7 @@
 from flask import abort, request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from app.models.user import User, insert_user
+from app.models.user import User, insert_user, get_user_by_email
 from app.models.group_member import GroupMember
 from app.api.resources.common import (load_request_data_as_json,
                                       check_user_exists,
@@ -18,8 +18,10 @@ def _load_group_add_user_data(json_data):
     user_id = get_attribute_if_existing(json_data, "user_id", ttype=int)
     if user_id is None:
         email = get_attribute(json_data, "email")
-        user = User(email=email)
-        insert_user(user)
+        user = get_user_by_email(email)
+        if user is None:
+            user = User(email=email)
+            insert_user(user)
         json_data["user_id"] = user.id
 
     return json_data

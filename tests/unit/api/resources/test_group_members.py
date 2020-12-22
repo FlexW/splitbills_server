@@ -274,3 +274,79 @@ def test_add_not_registered_user_to_existing_group(test_client, api_headers_bear
     group = get_group_by_id(group.id)
 
     assert len(group.group_members) == 2
+
+
+def test_add_new_member_to_group_add_member_as_friend_of_group_members(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    user1 = insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    user2 = insert_user(user2)
+
+    group_member1 = GroupMember(user=user1)
+    group = Group(name="Muster",
+                  group_members=[group_member1])
+    insert_group(group)
+
+    group_add_user_data = {
+        "user_id": user2.id,
+    }
+
+    response = test_client.post("/groups/{}/members".format(group.id),
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(group_add_user_data))
+
+    assert response.status_code == 201
+
+    user1_friends = get_friends_by_user_id(user1.id)
+    assert len(user1_friends) == 1
+    assert user1_friends[0].friend_id == user2.id
+
+    assert len(user2.friends) == 1
+    assert user2.friends[0].friend_id == user1.id
+
+
+def test_add_not_registered_user_to_group_if_user_already_created(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    user1 = insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    new_user_email = "newuser@mail.de"
+    insert_user(User(email=new_user_email))
+
+    group_member1 = GroupMember(user=user1)
+    group = Group(name="Muster",
+                  group_members=[group_member1])
+    insert_group(group)
+
+    group_add_user_data = {
+        "email": new_user_email
+    }
+
+    response = test_client.post("/groups/{}/members".format(group.id),
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(group_add_user_data))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 201
+    assert json_response["message"] == "Added user to group"
+
+    group = get_group_by_id(group.id)
+
+    assert len(group.group_members) == 2

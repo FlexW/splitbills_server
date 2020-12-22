@@ -3,6 +3,7 @@ import decimal
 from flask import abort, request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
+from app.models.user import User, insert_user, get_user_by_email
 from app.models.bill_member import BillMember
 from app.api.resources.common import (load_request_data_as_json,
                                       check_bill_exists,
@@ -36,7 +37,16 @@ def _load_bill_data(json_data):
         data["members"] = []
 
         for member in members:
-            member_id = get_attribute(member, "user_id", ttype=int)
+            member_id = get_attribute_if_existing(member, "user_id", ttype=int)
+
+            if member_id is None:
+                email = get_attribute(member, "email")
+                user = get_user_by_email(email)
+                if user is None:
+                    user = User(email=email)
+                    insert_user(user)
+                member_id = user.id
+
             amount = get_attribute(member, "amount", ttype=int)
 
             data["members"].append({
