@@ -10,7 +10,8 @@ from app.api.resources.common import (load_request_data_as_json,
                                       get_attribute,
                                       get_attribute_if_existing,
                                       check_has_not_attribute,
-                                      convert_string_to_datetime)
+                                      convert_string_to_datetime,
+                                      update_friends)
 
 
 def _load_bill_data(json_data):
@@ -145,6 +146,11 @@ def _delete_bill(bill):
     bill.valid = False
 
 
+def _update_friends(bill):
+    user_id_list = [member.user_id for member in bill.members]
+    update_friends(user_id_list)
+
+
 class BillResource(Resource):
 
     @jwt_required
@@ -160,6 +166,8 @@ class BillResource(Resource):
         _check_user_is_allowed_to_modify_bill(get_authorized_user(), bill)
 
         _update_bill_data(bill, data)
+
+        _update_friends(bill)
 
         return {"message": "Updated bill"}, 200
 

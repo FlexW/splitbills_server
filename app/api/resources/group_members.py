@@ -7,7 +7,8 @@ from app.api.resources.common import (load_request_data_as_json,
                                       check_user_is_member_of_group,
                                       check_group_exists,
                                       get_authorized_user,
-                                      get_attribute)
+                                      get_attribute,
+                                      update_friends)
 
 
 def _load_group_add_user_data(json_data):
@@ -38,10 +39,14 @@ class GroupMembersResource(Resource):
         group = check_group_exists(group_id)
         user = check_user_exists(data["user_id"])
 
-        check_user_is_member_of_group(get_authorized_user(), group)
+        current_user = get_authorized_user()
+
+        check_user_is_member_of_group(current_user, group)
 
         _check_user_is_not_already_member_of_group(user, group)
 
         _add_user_to_group(user, group)
+
+        update_friends([current_user.id, data["user_id"]])
 
         return {"message": "Added user to group"}, 201

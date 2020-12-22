@@ -1,6 +1,7 @@
 import json
 import datetime
 
+from app.models.friend import get_friends_by_user_id
 from app.models.group import Group, insert_group
 from app.models.group_member import GroupMember
 from app.models.user import User, insert_user
@@ -67,6 +68,7 @@ def test_add_members_to_bill_if_bill_already_created(test_client, api_headers_be
 
     bill = get_bill_by_id(bill_id)
 
+    assert response.status_code == 200
     assert json_response["message"] == "Updated bill"
 
     assert len(bill.members) == 3
@@ -626,3 +628,75 @@ def test_error_on_datetime_invalid_format(test_client, api_headers_bearer, inser
     assert response.status_code == 400
     assert json_response["message"] == "Cannot convert a to datetime"
     assert bill.date == now
+
+
+def test_add_new_member_to_bill_add_member_as_friend_of_bill_members(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+    now = datetime.datetime.utcnow()
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+
+    bill_member1 = BillMember(user_id=user1.id, amount="5.00")
+    bill_member2 = BillMember(user_id=user2.id, amount="-5.00")
+
+    bill1 = Bill(description="Bill",
+                 date=now,
+                 date_created=now,
+                 members=[bill_member1, bill_member2])
+    bill_id = insert_bill(bill1).id
+
+    data = {
+        "members": [
+            {
+                "user_id": user1.id,
+                "amount": -3
+            },
+            {
+                "user_id": user2.id,
+                "amount": -3
+            },
+            {
+                "user_id": user3.id,
+                "amount": 6
+            }
+        ]
+    }
+
+    response = test_client.put("/bills/{}".format(bill_id),
+                               headers=api_headers_bearer(
+                                   user1_tokens["access_token"]["token"]),
+                               data=json.dumps(data))
+
+    assert response.status_code == 200
+
+    user1_friends = get_friends_by_user_id(user1.id)
+    assert len(user1_friends) == 2
+    assert user1_friends[0].friend_id == user2.id
+    assert user1_friends[1].friend_id == user3.id
+
+    user2_friends = get_friends_by_user_id(user2.id)
+    assert len(user2_friends) == 2
+    assert user2_friends[0].friend_id == user1.id
+    assert user2_friends[1].friend_id == user3.id
+
+    user3_friends = get_friends_by_user_id(user3.id)
+    assert len(user3_friends) == 2
+    assert user3_friends[0].friend_id == user1.id
+    assert user3_friends[1].friend_id == user2.id
