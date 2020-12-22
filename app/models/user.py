@@ -1,5 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
+from app.models.friend import Friend
+# Import to get executed
 from app.models.group_member import GroupMember
 
 
@@ -11,6 +13,9 @@ class User(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
 
     group_memberships = db.relationship("GroupMember", back_populates="user")
+
+    friends = db.relationship(
+        "Friend", back_populates="user", foreign_keys=[Friend.user_id])
 
     @property
     def password(self):

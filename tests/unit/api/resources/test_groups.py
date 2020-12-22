@@ -2,6 +2,7 @@ import json
 
 from app.models.user import User, insert_user
 from app.models.group_member import GroupMember
+from app.models.friend import get_friends_by_user_id
 from app.models.group import Group, get_group_by_id, insert_group, get_all_groups
 
 
@@ -339,3 +340,120 @@ def test_error_on_user_not_in_group(test_client, api_headers_bearer, insert_toke
 
     assert json_response["message"] == "User who created group must be group member"
     assert len(get_all_groups()) == 0
+
+
+def test_insert_friends_of_user_after_adding_group(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user1.id,
+            },
+            {
+                "id": user2.id,
+            },
+            {
+                "id": user3.id,
+            }
+
+        ]
+    }
+
+    test_client.post("/groups",
+                     headers=api_headers_bearer(
+                         user1_tokens["access_token"]["token"]),
+                     data=json.dumps(group_data))
+
+    # Get friends of user1
+    friends_user1 = get_friends_by_user_id(user1.id)
+    assert len(friends_user1) == 2
+    assert friends_user1[0].friend_id == user2.id
+    assert friends_user1[1].friend_id == user3.id
+
+    # Get friends of user2
+    friends_user2 = get_friends_by_user_id(user2.id)
+    assert len(friends_user2) == 2
+    assert friends_user2[0].friend_id == user1.id
+    assert friends_user2[1].friend_id == user3.id
+
+    # Get friends of user3
+    friends_user3 = get_friends_by_user_id(user3.id)
+    assert len(friends_user3) == 2
+    assert friends_user3[0].friend_id == user1.id
+    assert friends_user3[1].friend_id == user2.id
+
+
+def test_can_create_multiple_times_group_with_same_members(test_client, api_headers_bearer, insert_tokens):
+    password = "securepassword"
+
+    user1 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster@mail.de",
+                 password=password)
+    insert_user(user1)
+    user1_tokens = insert_tokens(user1.email)
+
+    user2 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster2@mail.de",
+                 password=password)
+    insert_user(user2)
+
+    user3 = User(first_name="Max",
+                 last_name="Muster",
+                 email="muster3@mail.de",
+                 password=password)
+    insert_user(user3)
+
+    group_data = {
+        "name": "Muster",
+        "members": [
+            {
+                "id": user1.id,
+            },
+            {
+                "id": user2.id,
+            },
+            {
+                "id": user3.id,
+            }
+
+        ]
+    }
+
+    # Create group first time
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+
+    assert response.status_code == 201
+
+    # Create group second time
+    response = test_client.post("/groups",
+                                headers=api_headers_bearer(
+                                    user1_tokens["access_token"]["token"]),
+                                data=json.dumps(group_data))
+
+    assert response.status_code == 201

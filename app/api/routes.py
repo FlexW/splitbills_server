@@ -11,6 +11,7 @@ from .resources.tokens import TokensResource
 from .resources.token import TokenResource
 from .resources.tokens_refresh import TokensRefreshResource
 from .resources.welcome import WelcomeResource
+from .resources.friends import FriendsResource
 
 
 def init_routes(api):
@@ -33,3 +34,5 @@ def init_routes(api):
 
     api.add_resource(BillResource, "/bills/<int:bill_id>")
     api.add_resource(BillsResource, "/bills")
+
+    api.add_resource(FriendsResource, "/friends")
