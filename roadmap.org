@@ -1,5 +1,9 @@
 * Roadmap
 
+** TODO Add database migration
+    Use [[https://flask-migrate.readthedocs.io/en/latest/][flask-migrate]] for that.
+*** TODO Make sure migrations are automatically executed on server start
+
 ** TODO Refactor code and unit tests
     Make functions shorter and move common logic into separate functions.
     Find better names for some functions.
