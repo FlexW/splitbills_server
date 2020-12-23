@@ -1,5 +1,21 @@
 * Roadmap
 
+** TODO Refactor code and unit tests
+    Make functions shorter and move common logic into separate functions.
+    Find better names for some functions.
+    
+    Unit tests should be readable.
+
+** TODO Introduce version schema
+    Version schema should be MAJROR.MINOR.PATCH where MAJOR indicates a 
+    breaking change in the api, MINOR indicates additions or non breaking 
+    changes in the api, and PATCH indicates changes in the code that don't
+    alter the api interface.
+
+** TODO Routes should be versionable
+    Routes should start with version numbers like /v1/bills.
+    Each version should live in it's own blueprint.
+
 ** TODO Work on groups
 *** DONE User should be able to add members to group on creating group
 *** DONE If group is already created user should be able to add other members
@@ -12,21 +28,23 @@
 ** TODO Implement better error handling
    Server should throw nice error messages on missing authentication, or
    invalid routes, unexpected errors, or invalid content type.
+   [[https://flask.palletsprojects.com/en/1.1.x/patterns/apierrors/][Flask api errors]]
 
 
 ** TODO Update Dockerfile and add a docker-compose file
-   docker-compose file should fill in necessary environment variables
+   docker-compose file should fill in necessary environment variables like secret 
+   and in the future details of the mail server.
 
 
 ** TODO Work on registration
 *** TODO Implement verification for registration
-    If accounts not confirmed, they should be not able to do anything.
+    If accounts not are confirmed, they should be not able to do anything.
 
 
 ** TODO Work on users
 *** TODO User should be able to modify password
 *** TODO User should be able to modify email
-*** DONE Insert users on bill and group creation if user not created yet
+*** DONE Insert users on bill and group creation if user is not created yet
 **** DONE Add registered flag to User
 **** DONE Make password optional
 **** DONE Make sure password gets set on registration
@@ -38,7 +56,7 @@
 *** TODO User should be able to block other users
 
 
-** DONE Work on bills
+** TODO Work on bills
 *** DONE User should be able to add members to bill on creating bill
     Bill without bill members shouldn't be valid
 *** DONE If bill is already created user should be able to add other members
@@ -47,6 +65,7 @@
 *** DONE User should be able to modify bill data
 *** DONE Allow to delete bills
 *** DONE Store amount as integer in cents
+*** TODO Introduce currencies and currency conversation
 
 
 ** DONE Refactor groups/members route to group/{id}/members
