@@ -1,10 +1,19 @@
 FROM python:3.9.0-slim
 
-COPY requirements.txt /
-RUN apt update && apt install -y git
-RUN pip3 install -r requirements.txt
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-COPY . /app
+# set work directory
 WORKDIR /app
 
-ENTRYPOINT ["./scripts/gunicorn_starter.sh"]
+# install system dependencies
+RUN apt-get update
+RUN apt-get install -y git netcat libpq-dev build-essential
+
+# install the app
+COPY . /app
+RUN pip3 install -r requirements.txt
+
+# run entrypoint.sh
+ENTRYPOINT ["/app/scripts/entrypoint.sh"]

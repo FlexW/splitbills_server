@@ -74,6 +74,13 @@ flask run --host=0.0.0.0
 There is a script in the `script` directory called `run_debug_server`
 which runs all the previous commands automatically.
 
+## Run development server
+Change into the directory `docker` with `cd docker`. Start the server
+with `sudo docker-compose up --build`. If you are finished and want to
+delete all data run `sudo docker-compose down --volumes`. If you want
+to keep the volumes but want to remove the server simply run `sudo
+docker-compose down`.
+
 ## Api Description
 
 To get a rough overview, below are the routes listed that the server
