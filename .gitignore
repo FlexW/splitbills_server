@@ -3,3 +3,4 @@ __pycache__
 .coverage
 sb.db.sqlite
 .direnv
+.env.custom
