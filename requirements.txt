@@ -10,3 +10,4 @@ coverage >= 5.3
 pytest-cov >= 2.10.1
 flake8 >= 3.8.4
 psycopg2 >= 2.8.6
+itsdangerous >= 1.1.0

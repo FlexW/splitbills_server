@@ -1,3 +1,5 @@
+from flask import current_app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from app.models.friend import Friend
@@ -12,6 +14,7 @@ class User(db.Model):
     email = db.Column(db.String(64), nullable=False, unique=True)
     password_hash = db.Column(db.String(128))
     registered = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed = db.Column(db.Boolean, default=False)
 
     group_memberships = db.relationship("GroupMember", back_populates="user")
 
@@ -36,6 +39,31 @@ class User(db.Model):
             "last_name": self.last_name,
             "email": self.email
         }
+
+    def generate_confirmation_token(self, expiration=3600):
+        secret_key = current_app.config["SECRET_KEY"]
+
+        s = Serializer(secret_key, expiration)
+
+        return s.dumps({"confirm": self.id}).decode("utf-8")
+
+    def confirm(self, token):
+        secret_key = current_app.config["SECRET_KEY"]
+
+        s = Serializer(secret_key)
+        try:
+            data = s.loads(token.encode("utf-8"))
+        except Exception:
+            return False
+
+        if data.get("confirm") != self.id:
+            return False
+
+        self.confirmed = True
+        db.session.add(self)
+        db.session.commit()
+
+        return True
 
 
 def insert_user(user):

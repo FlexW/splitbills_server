@@ -2,10 +2,9 @@ Hello {{ username }},
 
 thanks for registering an account on SplitBills.
 
-To confirm that you really own that email address and to activate your
-account, you need to open the following link in a browser:
+This is your confirmation code:
 
-{{ link }}
+{{ token }}
 
 Kind Regards,
 

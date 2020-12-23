@@ -12,6 +12,7 @@ from .resources.token import TokenResource
 from .resources.tokens_refresh import TokensRefreshResource
 from .resources.welcome import WelcomeResource
 from .resources.friends import FriendsResource
+from .resources.users_confirm import UsersConfirmResource
 
 
 def init_routes(api):
@@ -23,6 +24,8 @@ def init_routes(api):
 
     api.add_resource(UserResource, "/users/<int:user_id>")
     api.add_resource(UsersResource, "/users")
+
+    api.add_resource(UsersConfirmResource, "/users/confirm/<token>")
 
     api.add_resource(GroupResource, "/groups/<int:group_id>")
     api.add_resource(GroupsResource, "/groups")
