@@ -23,6 +23,8 @@ pkgs.mkShell rec {
     (python-language-server.override {
       inherit mccabe yapf pycodestyle pydocstyle pyflakes rope;
     })
+  ] ++ [
+    pkgs.postgresql
   ];
 
   postVenvCreation = ''

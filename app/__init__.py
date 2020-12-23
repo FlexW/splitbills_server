@@ -1,10 +1,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
+from flask_mail import Mail
 from .config import config
 
 db = SQLAlchemy()
 jwt = JWTManager()
+mail = Mail()
 
 # Import to get registered
 from app.authentication import check_if_token_revoked
@@ -13,6 +15,8 @@ from app.authentication import check_if_token_revoked
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+
+    mail.init_app(app)
 
     jwt.init_app(app)
 

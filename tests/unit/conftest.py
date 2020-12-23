@@ -2,8 +2,8 @@ import pytest
 
 from flask import current_app
 from flask_jwt_extended import create_access_token, create_refresh_token
-from app.models.token import add_token_to_database
 from app import create_app
+from app.models.token import add_token_to_database
 
 
 @pytest.fixture
