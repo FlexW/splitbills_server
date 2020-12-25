@@ -2,8 +2,7 @@ from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.token import TokenNotFound, revoke_token, unrevoke_token
-from app.api.resources.common import get_attribute
-from app.api.resources.common import load_request_data_as_json
+from app.api.resources.common import get_attribute, load_request_data_as_json
 
 
 class TokenResource(Resource):

@@ -1,6 +1,6 @@
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource
-from app.api.resources.common import get_authorized_user
+from app.common import get_authorized_user
 
 
 class UsersConfirmResource(Resource):

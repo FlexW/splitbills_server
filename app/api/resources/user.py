@@ -2,7 +2,7 @@ from flask import abort
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from app.models.user import get_user_by_id
-from app.api.resources.common import get_authorized_user
+from app.common import get_authorized_user
 
 
 def _is_user_allowed_to_access(user_id):

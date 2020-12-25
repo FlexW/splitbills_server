@@ -96,13 +96,6 @@ def convert_string_to_datetime(datetime_str):
     return date
 
 
-def get_authorized_user():
-    authorized_user_email = get_jwt_identity()
-    authorized_user = get_user_by_email(authorized_user_email)
-
-    return authorized_user
-
-
 def update_friends(user_id_list):
     for user_id in user_id_list:
         user = get_user_by_id(user_id)

@@ -7,13 +7,13 @@ from app.models.user import User, insert_user, get_user_by_email
 from app.models.bill_member import BillMember
 from app.api.resources.common import (load_request_data_as_json,
                                       check_bill_exists,
-                                      get_authorized_user,
                                       get_attribute,
                                       get_attribute_if_existing,
                                       check_has_not_attribute,
                                       convert_string_to_datetime,
                                       update_friends)
 from app.decorators import confirmation_required
+from app.common import get_authorized_user
 
 
 def _load_bill_data(json_data):

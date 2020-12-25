@@ -7,10 +7,10 @@ from app.api.resources.common import (load_request_data_as_json,
                                       check_user_exists,
                                       check_user_is_member_of_group,
                                       check_group_exists,
-                                      get_authorized_user,
                                       get_attribute,
                                       get_attribute_if_existing,
                                       update_friends)
+from app.common import get_authorized_user
 
 
 def _load_group_add_user_data(json_data):

@@ -1,8 +1,7 @@
 from flask import abort, request, current_app
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token
-from app.api.resources.common import get_attribute
-from app.api.resources.common import load_request_data_as_json
+from app.api.resources.common import get_attribute, load_request_data_as_json
 from app.models.user import get_user_by_email
 from app.models.token import add_token_to_database
 

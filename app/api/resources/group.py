@@ -3,7 +3,8 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from app.api.resources.common import (
     load_request_data_as_json, check_user_is_member_of_group,
-    check_group_exists, get_attribute, get_authorized_user)
+    check_group_exists, get_attribute)
+from app.common import get_authorized_user
 
 
 def _load_group_data(json_data):

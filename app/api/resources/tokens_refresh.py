@@ -1,7 +1,8 @@
 from flask import current_app
 from flask_restful import Resource
-from flask_jwt_extended import (
-    jwt_refresh_token_required, get_jwt_identity, create_access_token)
+from flask_jwt_extended import (jwt_refresh_token_required,
+                                get_jwt_identity,
+                                create_access_token)
 from app.models.token import add_token_to_database
 
 

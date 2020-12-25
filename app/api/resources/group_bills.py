@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from app.models.bill import get_valid_bills_by_group_id
-from app.api.resources.common import get_authorized_user
+from app.common import get_authorized_user
 
 
 class GroupBillsResource(Resource):

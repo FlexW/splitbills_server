@@ -5,10 +5,10 @@ from app.models.group import Group, insert_group, get_valid_groups_by_user_id
 from app.models.user import User, get_user_by_id, get_user_by_email, insert_user
 from app.models.group_member import GroupMember
 from app.api.resources.common import (load_request_data_as_json,
-                                      get_authorized_user,
                                       get_attribute,
                                       get_attribute_if_existing,
                                       update_friends)
+from app.common import get_authorized_user
 # from app.decorators import confirmation_required
 
 

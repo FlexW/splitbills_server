@@ -9,12 +9,12 @@ from app.api.resources.common import (load_request_data_as_json,
                                       check_user_exists,
                                       check_group_exists,
                                       check_user_is_member_of_group,
-                                      get_authorized_user,
                                       get_attribute,
                                       check_has_not_attribute,
                                       get_attribute_if_existing,
                                       convert_string_to_datetime,
                                       update_friends)
+from app.common import get_authorized_user
 
 
 def _load_bill_data(json_data):

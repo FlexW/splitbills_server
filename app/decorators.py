@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import abort
-from app.api.resources.common import get_authorized_user
+from app.common import get_authorized_user
 
 
 def confirmation_required(fn):
