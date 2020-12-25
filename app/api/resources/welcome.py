@@ -1,5 +1,4 @@
 from flask_restful import Resource
-from app.mail import send_mail
 
 
 class WelcomeResource(Resource):

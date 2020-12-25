@@ -9,6 +9,7 @@ from app.api.resources.common import (load_request_data_as_json,
                                       get_attribute,
                                       get_attribute_if_existing,
                                       update_friends)
+# from app.decorators import confirmation_required
 
 
 def _load_group_data(json_data):
@@ -80,6 +81,7 @@ def _create_new_group(data):
 class GroupsResource(Resource):
 
     @jwt_required
+    # @confirmation_required
     def post(self):
         json_data = load_request_data_as_json(request)
 

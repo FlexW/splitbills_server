@@ -13,6 +13,6 @@ class UsersConfirmResource(Resource):
             return {"message": "Account already confirmed"}, 200
 
         if user.confirm(token):
-            return {"message": "Acount confirmed"}, 201
+            return {"message": "Account confirmed"}, 201
 
         return {"message": "Confirmation token invalid"}, 400

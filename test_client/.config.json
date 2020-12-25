@@ -1,0 +1,12 @@
+{
+    "host": "http://localhost",
+    "port": 5000,
+    "access_token": {
+        "id": 1,
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDg4Mjc1MDAsIm5iZiI6MTYwODgyNzUwMCwianRpIjoiYjhkYWMyYTQtZjgxZS00ZjNiLWI5N2EtOTM2ODk5OTAwNTJiIiwiZXhwIjoxNjA4ODI4NDAwLCJpZGVudGl0eSI6ImZlbGl4LndlaWxiYWNoQHQtb25saW5lLmRlIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIn0.M5n0jlSVlU2AHHXXqC1tpQI3aAiJae07K_5aRWud-iI"
+    },
+    "refresh_token": {
+        "id": 2,
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDg4Mjc1MDAsIm5iZiI6MTYwODgyNzUwMCwianRpIjoiZGNmZjc0ZWUtNzRiMy00MzRmLWJjMDEtYmZiOTg5ZGMxZjZmIiwiZXhwIjoxNjExNDE5NTAwLCJpZGVudGl0eSI6ImZlbGl4LndlaWxiYWNoQHQtb25saW5lLmRlIiwidHlwZSI6InJlZnJlc2gifQ.gcimH_rKI05T9ZBG219LUDUwXTtmallO3zyJq7RyHlw"
+    }
+}

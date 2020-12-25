@@ -2,7 +2,7 @@ from flask import request, abort
 from flask_restful import Resource
 from app.models.user import User, insert_user, get_user_by_email
 from app.api.resources.common import load_request_data_as_json, get_attribute
-from app.mail import send_mail
+from app.email import send_mail
 
 
 def _load_user_data_for_registration(json_data):
