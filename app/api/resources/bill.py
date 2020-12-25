@@ -13,6 +13,7 @@ from app.api.resources.common import (load_request_data_as_json,
                                       check_has_not_attribute,
                                       convert_string_to_datetime,
                                       update_friends)
+from app.decorators import confirmation_required
 
 
 def _load_bill_data(json_data):
@@ -164,6 +165,7 @@ def _update_friends(bill):
 class BillResource(Resource):
 
     @jwt_required
+    @confirmation_required
     def put(self, bill_id):
         json_data = load_request_data_as_json(request)
 
@@ -182,6 +184,7 @@ class BillResource(Resource):
         return {"message": "Updated bill"}, 200
 
     @jwt_required
+    @confirmation_required
     def delete(self, bill_id):
         bill = check_bill_exists(bill_id)
 

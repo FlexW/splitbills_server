@@ -18,6 +18,7 @@ def test_add_members_to_bill_if_bill_already_created(test_client, api_headers_be
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -25,12 +26,14 @@ def test_add_members_to_bill_if_bill_already_created(test_client, api_headers_be
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
 
@@ -92,6 +95,7 @@ def test_delete_members_from_bill_if_bill_already_created(test_client,
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -99,12 +103,14 @@ def test_delete_members_from_bill_if_bill_already_created(test_client,
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
 
@@ -157,6 +163,7 @@ def test_change_description_of_existing_bill(test_client, api_headers_bearer, in
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -164,6 +171,7 @@ def test_change_description_of_existing_bill(test_client, api_headers_bearer, in
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
@@ -199,6 +207,7 @@ def test_change_date_of_existing_bill(test_client, api_headers_bearer, insert_to
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -242,6 +251,7 @@ def test_dont_change_date_created_of_existing_bill(test_client, api_headers_bear
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -249,6 +259,7 @@ def test_dont_change_date_created_of_existing_bill(test_client, api_headers_bear
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
@@ -285,6 +296,7 @@ def test_dont_change_bill_if_amounts_sum_is_not_zero(test_client, api_headers_be
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -292,12 +304,14 @@ def test_dont_change_bill_if_amounts_sum_is_not_zero(test_client, api_headers_be
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
 
@@ -351,6 +365,7 @@ def test_delete_existing_bill(test_client, api_headers_bearer, insert_tokens):
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -358,12 +373,14 @@ def test_delete_existing_bill(test_client, api_headers_bearer, insert_tokens):
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
 
@@ -395,18 +412,21 @@ def test_error_on_user_is_not_allowed_to_modify_bill(test_client, api_headers_be
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
 
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
     user3_tokens = insert_tokens(user3.email)
@@ -444,18 +464,21 @@ def test_error_on_user_is_not_allowed_to_modify_bill2(test_client, api_headers_b
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
 
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
     user3_tokens = insert_tokens(user3.email)
@@ -497,18 +520,21 @@ def test_group_member_is_allowed_to_modify_bill(test_client, api_headers_bearer,
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
 
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
     user3_tokens = insert_tokens(user3.email)
@@ -551,6 +577,7 @@ def test_error_on_bill_not_existing(test_client, api_headers_bearer, insert_toke
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -558,6 +585,7 @@ def test_error_on_bill_not_existing(test_client, api_headers_bearer, insert_toke
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
@@ -594,6 +622,7 @@ def test_error_on_datetime_invalid_format(test_client, api_headers_bearer, inser
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -601,6 +630,7 @@ def test_error_on_datetime_invalid_format(test_client, api_headers_bearer, inser
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
@@ -637,6 +667,7 @@ def test_add_new_member_to_bill_add_member_as_friend_of_bill_members(test_client
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -644,12 +675,14 @@ def test_add_new_member_to_bill_add_member_as_friend_of_bill_members(test_client
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
     user3 = User(first_name="Max",
                  last_name="Muster",
                  email="muster3@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user3)
 
@@ -709,6 +742,7 @@ def test_add_unregistered_member_to_bill_if_bill_already_created(test_client, ap
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -716,6 +750,7 @@ def test_add_unregistered_member_to_bill_if_bill_already_created(test_client, ap
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
@@ -766,6 +801,7 @@ def test_add_unregistered_member_to_bill_that_was_already_created(test_client, a
     user1 = User(first_name="Max",
                  last_name="Muster",
                  email="muster@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user1)
     user1_tokens = insert_tokens(user1.email)
@@ -773,6 +809,7 @@ def test_add_unregistered_member_to_bill_that_was_already_created(test_client, a
     user2 = User(first_name="Max",
                  last_name="Muster",
                  email="muster2@mail.de",
+                 confirmed=True,
                  password=password)
     insert_user(user2)
 
@@ -817,3 +854,37 @@ def test_add_unregistered_member_to_bill_that_was_already_created(test_client, a
     assert json_response["message"] == "Updated bill"
 
     assert len(bill.members) == 3
+
+
+def test_needs_to_be_confirmed_on_delete(test_client, api_headers_bearer, insert_tokens):
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password="secret")
+    insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    response = test_client.delete("/bills/1",
+                                  headers=api_headers_bearer(
+                                      tokens["access_token"]["token"]))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 403
+    assert json_response["message"] == "Account needs to be confirmed for this operation"
+
+
+def test_needs_to_be_confirmed_on_put(test_client, api_headers_bearer, insert_tokens):
+    user = User(first_name="Max",
+                last_name="Muster",
+                email="muster@mail.de",
+                password="secret")
+    insert_user(user)
+    tokens = insert_tokens(user.email)
+
+    response = test_client.put("/bills/1",
+                               headers=api_headers_bearer(
+                                   tokens["access_token"]["token"]))
+    json_response = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 403
+    assert json_response["message"] == "Account needs to be confirmed for this operation"
