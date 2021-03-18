@@ -16,4 +16,4 @@ COPY . /app
 RUN pip3 install -r requirements.txt
 
 # run entrypoint.sh
-ENTRYPOINT ["/app/scripts/entrypoint.sh"]
+CMD ["bash /app/scripts/entrypoint.sh"]
