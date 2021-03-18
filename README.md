@@ -42,6 +42,18 @@ Now install the dependencies.
 pip install -r requirements.txt
 ```
 
+### Docker
+It's also possible to run the server in a Docker container. In the
+root of the project you can find the `Dockerfile`. A docker-compose
+file that starts the server with a postgresql database can be found in
+`docker/splitbills_server/docker-compose.yml`.
+
+To start the docker containers execute:
+```
+cd docker/splitbills_server
+docker-compose up
+```
+
 ## Run tests
 Run all tests with
 ```
