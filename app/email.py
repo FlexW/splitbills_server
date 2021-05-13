@@ -7,6 +7,8 @@ from app import mail
 def send_mail(to, subject, template, **kwargs):
     app = current_app._get_current_object()
 
+    app.logger.info(f"Send email to {to} with subject ${subject}")
+
     mail_subject_prefix = current_app.config["MAIL_SUBJECT_PREFIX"]
     sender = current_app.config["MAIL_SENDER"]
 
@@ -20,6 +22,11 @@ def send_mail(to, subject, template, **kwargs):
     thread.start()
 
     return thread
+
+
+def send_mail_to_admin(subject, content):
+    to = current_app.config["MAIL_SENDER"]
+    send_mail(to, subject, "mail/admin", subject=subject, content=content)
 
 
 def send_mail_async(app, msg):

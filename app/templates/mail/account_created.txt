@@ -1,0 +1,7 @@
+Hello {{ username }},
+
+thanks for registering an account on SplitBills.
+
+Kind Regards,
+
+The SplitBills Team

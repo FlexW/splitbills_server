@@ -17,11 +17,13 @@ class Config:
     MAIL_PORT = os.environ.get("MAIL_PORT") or 25
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME") or None
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD") or None
-    MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL") or False
-    MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS") or False
+    MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL") == "True"
+    MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS") == "True"
 
     MAIL_SUBJECT_PREFIX = "[SplitBills]"
     MAIL_SENDER = "SplitBills Admin <admin@splitbills.org>"
+
+    ACCOUNT_CONFIRMATION = os.environ.get("ACCOUNT_CONFIRMATION") == "True"
 
 
 class TestingConfig(Config):
