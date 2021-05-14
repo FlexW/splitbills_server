@@ -1,10 +1,12 @@
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import ForeignKey
 from app import db
 from app.models.friend import Friend
 # Import to get executed
 from app.models.group_member import GroupMember
+from app.models.role import Role
 
 
 class User(db.Model):
@@ -15,11 +17,22 @@ class User(db.Model):
     password_hash = db.Column(db.String(128))
     registered = db.Column(db.Boolean, nullable=False, default=False)
     confirmed = db.Column(db.Boolean, default=False)
+    role_id = db.Column(db.Integer, ForeignKey("role.id"))
 
     group_memberships = db.relationship("GroupMember", back_populates="user")
 
     friends = db.relationship(
         "Friend", back_populates="user", foreign_keys=[Friend.user_id])
+
+    role = db.relationship("Role")
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if (self.role is None):
+            if self.email == current_app.config['SPLITBILLS_ADMIN_EMAIL']:
+                self.role = Role.query.filter_by(name="Admin").first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
 
     @property
     def password(self):

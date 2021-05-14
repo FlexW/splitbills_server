@@ -79,3 +79,17 @@ def test_dont_get_unknown_user_by_id(app):
     u_from_db = get_user_by_id(0)
 
     assert u_from_db is None
+
+
+def test_set_admin_role(app):
+    u = User(first_name="Admin",
+             last_name="Muster",
+             email=app.config["SPLITBILLS_ADMIN_EMAIL"],
+             password="securepassword")
+
+    u = insert_user(u)
+
+    u_from_db = get_user_by_id(u.id)
+
+    assert u.role.name == "Admin"
+

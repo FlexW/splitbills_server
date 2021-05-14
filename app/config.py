@@ -21,9 +21,12 @@ class Config:
     MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS") == "True"
 
     MAIL_SUBJECT_PREFIX = "[SplitBills]"
-    MAIL_SENDER = "SplitBills Admin <admin@splitbills.org>"
+    MAIL_SENDER = os.environ.get('SPLITBILLS_ADMIN_EMAIL') or "SplitBills Admin <admin@splitbills.com>"
 
     ACCOUNT_CONFIRMATION = os.environ.get("ACCOUNT_CONFIRMATION") == "True"
+
+    SPLITBILLS_ADMIN_EMAIL = os.environ.get('SPLITBILLS_ADMIN_EMAIL') or "SplitBills Admin <admin@splitbills.com>"
+    SPLITBILLS_ADMIN_PASSWORD = os.environ.get('SPLITBILLS_ADMIN_PASSWORD') or "secret"
 
 
 class TestingConfig(Config):
