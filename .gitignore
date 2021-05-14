@@ -1,5 +1,6 @@
 .venv
 env
+.vs
 __pycache__
 .coverage
 sb.db.sqlite
