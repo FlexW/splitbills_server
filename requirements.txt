@@ -13,3 +13,4 @@ flake8 >= 3.8.4
 psycopg2-binary >= 2.8.6
 itsdangerous >= 1.1.0
 requests >= 2.25.1
+pytest >= 6.2.4
