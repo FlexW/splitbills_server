@@ -1,0 +1,48 @@
+version: '3.7'
+
+x-environment: &common_environment
+  POSTGRES_DB: splitbills_server_db
+  POSTGRES_USER: splitbills_server
+  POSTGRES_PASSWORD: secretpostgrespassword
+
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - data:/var/lib/postgresql/data/
+    environment: *common_environment
+
+  mail:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+      - 8025:8025
+
+  app:
+    build: '.'
+    restart: always
+    ports:
+      - 8003:8003
+    environment:
+      <<: *common_environment
+      ENTRYPOINT_DATABASE: postgres
+      ENTRYPOINT_DATABASE_HOST: db
+      ENTRYPOINT_DATABASE_PORT: 5432
+      ENTRYPOINT_WORKDIR: "."
+      ENTRYPOINT_HOST: 0.0.0.0
+      ENTRYPOINT_PORT: 8003
+      ACCOUNT_CONFIRMATION: "False"
+      SECRET_KEY: splitbillsserversecretkey
+      DATABASE_URI: postgresql+psycopg2://splitbills_server:secretpostgrespassword@db:5432/splitbills_server_db
+      MAIL_SERVER: mail
+      MAIL_PORT: 1025
+      MAIL_USE_SSL: "False"
+      MAIL_USERNAME: splitbills.dev@t-online.de
+      MAIL_PASSWORD: secretmailpassword
+    depends_on:
+      - db
+      - mail
+
+volumes:
+  data:

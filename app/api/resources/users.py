@@ -1,4 +1,4 @@
-from flask import request, abort
+from flask import request, abort, current_app
 from flask_restful import Resource
 from app.models.user import User, insert_user, get_user_by_email
 from app.api.resources.common import load_request_data_as_json, get_attribute
@@ -40,13 +40,14 @@ def _create_new_user(data, confirm_account):
                     password=data["password"],
                     registered=True,
                     confirmed=not confirm_account)
-        insert_user(user)
     else:
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
         user.password = data["password"]
         user.registered = True
         user.confirmed = not confirm_account
+
+    insert_user(user)
 
     if confirm_account:
         token = user.generate_confirmation_token()
@@ -72,7 +73,7 @@ class UsersResource(Resource):
 
         _check_user_does_not_exist(data)
 
-        user = _create_new_user(data, config["default"].ACCOUNT_CONFIRMATION)
+        user = _create_new_user(data, current_app.config["ACCOUNT_CONFIRMATION"])
 
         result = {
             "message": "Created new user",
