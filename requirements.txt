@@ -1,9 +1,9 @@
-flask >= 1.1.2
+flask >= 2.1.0
 flask-mail >= 0.9.1
-flask-migrate >= 2.5.3
+flask-migrate >= 2.5.31
 flask-restful >= 0.3.8
 flask-sqlalchemy >= 2.4.4
-flask-jwt-extended >= 3.25.0, < 4.0.0
+flask-jwt-extended >= 3.25.0
 flask-mail >= 0.9.1
 gunicorn >= 20.0.4
 coverage >= 5.3
@@ -12,3 +12,4 @@ flake8 >= 3.8.4
 psycopg2 >= 2.8.6
 itsdangerous >= 1.1.0
 requests >= 2.25.1
+python-dateutil >= 2.8.2
