@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "splitbills-server"
+version = "0.0.1"
+description = "A server for splitbills"
+authors = ["Felix Weilbach <feweilbach@gmail.com>"]
+license = "GPL-v3"
+readme = "README.md"
+packages = [{include = "splitbills_server"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+flask = "^2.2.2"
+flask-mail = "^0.9.1"
+flask-migrate = "^4.0.0"
+flask-restful = "^0.3.9"
+flask-sqlalchemy = "^3.0.2"
+flask-jwt-extended = "^4.4.4"
+gunicorn = "^20.1.0"
+coverage = "^7.0.1"
+pytest-cov = "^4.0.0"
+flake8 = "^6.0.0"
+psycopg2 = "^2.9.5"
+itsdangerous = "^2.1.2"
+requests = "^2.28.1"
+python-dateutil = "^2.8.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

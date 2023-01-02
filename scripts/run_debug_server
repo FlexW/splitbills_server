@@ -3,4 +3,4 @@
 export FLASK_APP=splitbills_server.py
 export FLASK_ENV=development
 
-flask run $@
+poetry run -- flask run $@

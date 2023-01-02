@@ -19,25 +19,13 @@ Change into the cloned repository
 cd splitbills_server
 ```
 
-### Virtual environment with Python
-Create a virtual environment for python
-```
-python -m venv env
-```
-Activate the environment. If you are using a other shell interpreter
-than bash, search for an correct activate file. Example for fish:
-`env/bin/activate.fish`.
-```
-source env/bin/activate
-```
-Now install the dependencies.
-```
-pip install -r requirements.txt
-```
+There are two ways to use it. You can either use the provided docker file. That
+is useful if you only want to use the server and not develop it. If you want to
+develop the server you can install all the dependencies with poetry and use it
+without docker.
 
 ### Docker
-It's also possible to run the server in a Docker container. In the
-root of the project you can find the `Dockerfile`. A docker-compose
+In the root of the project you can find the `Dockerfile`. A `docker-compose`
 file that starts the server with a postgresql database can be found in
 `docker/splitbills_server/docker-compose.yml`.
 
@@ -51,15 +39,29 @@ container with
 ```
 docker-compose up --build
 ```
+If you are finished and want to delete all data run 
+`sudo docker-compose down --volumes`. If you want to keep the volumes but want 
+to remove the server simply run `sudo docker-compose down`.
+
+### Poetry
+Make sure `poetry` is installed.
+Ensure that all dependencies are installed with
+```
+poetry install --no-root
+```
 
 ## Run tests
 Run all tests with
 ```
-./scripts/run_tests
+poetry run -- ./scripts/run_tests
 ```
 This will also generate the coverage.
 
 To just run unit tests without coverage, you can execute `pytest` in the root of the project.
+For example:
+```
+poetry run -- pytest
+```
 
 ## Run
 Tell flask which app it shoud run
@@ -73,23 +75,16 @@ export FLASK_ENV=development
 ```
 Then run it
 ```
-flask run
+poetry run -- flask run
 ```
 This will start a debug server on `http://127.0.0.1:5000`. If you want
 the debug server to be visible for other operating systems too, run
 instead
 ```
-flask run --host=0.0.0.0
+poetry run -- flask run --host=0.0.0.0
 ```
 There is a script in the `script` directory called `run_debug_server`
 which runs all the previous commands automatically.
-
-## Run development server
-Change into the directory `docker` with `cd docker`. Start the server
-with `sudo docker-compose up --build`. If you are finished and want to
-delete all data run `sudo docker-compose down --volumes`. If you want
-to keep the volumes but want to remove the server simply run `sudo
-docker-compose down`.
 
 ## Api Description
 

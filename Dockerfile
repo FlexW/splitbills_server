@@ -10,10 +10,11 @@ WORKDIR /app
 # install system dependencies
 RUN apt-get update
 RUN apt-get install -y git netcat libpq-dev build-essential
+RUN pip3 install poetry
 
 # install the app
 COPY . /app
-RUN pip3 install -r requirements.txt
+RUN poetry install --no-root
 
 # run entrypoint.sh
 CMD ["bash /app/scripts/entrypoint.sh"]
