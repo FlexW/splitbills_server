@@ -40,19 +40,19 @@ class User(db.Model):
             "email": self.email
         }
 
-    def generate_confirmation_token(self, expiration=3600):
+    def generate_confirmation_token(self):
         secret_key = current_app.config["SECRET_KEY"]
 
-        s = Serializer(secret_key, expiration)
+        s = Serializer(secret_key)
 
-        return s.dumps({"confirm": self.id}).decode("utf-8")
+        return s.dumps({"confirm": self.id})
 
-    def confirm(self, token):
+    def confirm(self, token, expiration=3600):
         secret_key = current_app.config["SECRET_KEY"]
 
         s = Serializer(secret_key)
         try:
-            data = s.loads(token.encode("utf-8"))
+            data = s.loads(token.encode("utf-8"), expiration)
         except Exception:
             return False
 

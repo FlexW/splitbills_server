@@ -4,3 +4,4 @@ __pycache__
 sb.db.sqlite
 .direnv
 docker/splitbills_server/.env.custom
+env

@@ -37,7 +37,7 @@ def _validate_group_data(data, group_id):
 
 class GroupResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def put(self, group_id):
         json_data = load_request_data_as_json(request)
 
@@ -53,7 +53,7 @@ class GroupResource(Resource):
 
         return {"message": "Edited group"}, 200
 
-    @jwt_required
+    @jwt_required()
     def delete(self, group_id):
         group = check_group_exists(group_id)
 

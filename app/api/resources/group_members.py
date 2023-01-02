@@ -39,7 +39,7 @@ def _add_user_to_group(user, group):
 
 class GroupMembersResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def post(self, group_id):
         json_data = load_request_data_as_json(request)
 

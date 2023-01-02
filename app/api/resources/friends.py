@@ -6,7 +6,7 @@ from app.common import get_authorized_user
 
 class FriendsResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def get(self):
 
         current_user = get_authorized_user()

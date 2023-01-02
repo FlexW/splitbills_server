@@ -6,7 +6,7 @@ from app.api.resources.common import get_attribute, load_request_data_as_json
 
 
 class TokenResource(Resource):
-    @jwt_required
+    @jwt_required()
     def put(self, token_id):
         # Get and verify the desired revoked status from the body
         json_data = load_request_data_as_json(request)

@@ -14,7 +14,7 @@ def _delete_user_from_group(user, group):
 
 class GroupMemberResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def delete(self, group_id, user_id):
         group = check_group_exists(group_id)
 

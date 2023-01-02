@@ -5,7 +5,7 @@ from app.common import get_authorized_user
 
 class UsersConfirmResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def put(self, token):
         user = get_authorized_user()
 

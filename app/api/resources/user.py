@@ -14,7 +14,7 @@ def _is_user_allowed_to_access(user_id):
 
 class UserResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def get(self, user_id):
         _is_user_allowed_to_access(user_id)
 

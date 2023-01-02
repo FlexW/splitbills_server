@@ -164,7 +164,7 @@ def _update_friends(bill):
 
 class BillResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     @confirmation_required
     def put(self, bill_id):
         json_data = load_request_data_as_json(request)
@@ -183,7 +183,7 @@ class BillResource(Resource):
 
         return {"message": "Updated bill"}, 200
 
-    @jwt_required
+    @jwt_required()
     @confirmation_required
     def delete(self, bill_id):
         bill = check_bill_exists(bill_id)

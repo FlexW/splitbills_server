@@ -7,7 +7,7 @@ from app.models.token import add_token_to_database
 
 
 class TokensRefreshResource(Resource):
-    @jwt_required
+    @jwt_required(refresh=True)
     def post(self):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user)

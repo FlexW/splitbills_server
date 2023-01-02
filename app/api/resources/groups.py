@@ -80,7 +80,7 @@ def _create_new_group(data):
 
 class GroupsResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     # @confirmation_required
     def post(self):
         json_data = load_request_data_as_json(request)
@@ -101,7 +101,7 @@ class GroupsResource(Resource):
 
         return result, 201
 
-    @jwt_required
+    @jwt_required()
     def get(self):
         current_user = get_authorized_user()
 

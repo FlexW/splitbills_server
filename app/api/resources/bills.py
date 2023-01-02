@@ -113,7 +113,7 @@ def _create_new_bill(data):
 
 class BillsResource(Resource):
 
-    @jwt_required
+    @jwt_required()
     def post(self):
         json_data = load_request_data_as_json(request)
 
@@ -131,7 +131,7 @@ class BillsResource(Resource):
             "bill": bill.to_dict()
         }, 201
 
-    @jwt_required
+    @jwt_required()
     def get(self):
         current_user = get_authorized_user()
 
